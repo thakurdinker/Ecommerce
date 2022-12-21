@@ -1,0 +1,9 @@
+.card {
+  height: 320px;
+  margin-bottom: 2rem;
+}
+
+.img-thumbnail {
+  width: auto;
+  height: 200px;
+}
