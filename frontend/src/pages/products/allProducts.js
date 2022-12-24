@@ -31,7 +31,7 @@ const AllProducts = (props) => {
 
   const displayProducts = (products) => {
     if (products.length === 0) {
-      return <h1 className="text-center">No response from server</h1>;
+      return;
     } else {
       return products.map(function (product) {
         return (
@@ -45,20 +45,24 @@ const AllProducts = (props) => {
 
   if (state.searchRequested === true) {
     return (
-      <div className="container mt-2">
-        <h1 className="text-center">
-          {state.requestedProducts.length === 0 ? "Product Not found" : ""}
-        </h1>
-        <div className="row">{displayProducts(state.requestedProducts)}</div>
-      </div>
+      <>
+        <div className="container mt-2">
+          <h1 className="text-center">
+            {state.requestedProducts.length === 0 ? "Product Not found" : ""}
+          </h1>
+          <div className="row">{displayProducts(state.requestedProducts)}</div>
+        </div>
+      </>
     );
   }
 
   return (
-    <div className="container mt-2">
-      <h1 className="text-center">All Products</h1>
-      <div className="row">{displayProducts(allProducts)}</div>
-    </div>
+    <>
+      <div className="container mt-2">
+        <h1 className="text-center">All Products</h1>
+        <div className="row">{displayProducts(allProducts)}</div>
+      </div>
+    </>
   );
 };
 

@@ -8,6 +8,10 @@ const userSchema = new Schema({
     type: String,
     required: [true, "Email is required"],
   },
+  role: {
+    type: Number,
+    required: [true, "Role is required"],  // 0 for user and 1 for admin
+  },
 });
 
 userSchema.plugin(passportLocalMongoose);

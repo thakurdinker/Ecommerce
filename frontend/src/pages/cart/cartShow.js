@@ -53,7 +53,11 @@ const Cart = () => {
   };
 
   if (!cart.user) {
-    return <h1 className="text-center">Cart is Empty</h1>;
+    return (
+      <>
+        <h1 className="text-center">Cart is Empty</h1>
+      </>
+    );
   } else {
     return (
       <>

@@ -20,6 +20,7 @@ const reducer = (state, action) => {
         requestedProducts: [...state.requestedProducts, ...action.data],
         productFound: action.data.length === 0 ? false : true,
         searchRequested: true,
+        searchField: true,
       };
     case HIDE_SEARCH_FILED:
       return Object.assign({}, { ...state }, { searchField: false });

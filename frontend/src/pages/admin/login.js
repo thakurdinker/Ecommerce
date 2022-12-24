@@ -1,17 +1,18 @@
 import axios from "axios";
-import { useContext } from "react";
-import { User, ADD_USER } from "../../contexts/UserContext";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import LoginForm from "../../components/login/loginForm";
+import { useContext } from "react";
+import { ADD_ADMIN, AdminContext } from "../../admin/context/AdminContext";
 
-const LoginUser = () => {
+const LoginAdmin = () => {
   const navigate = useNavigate();
-  const { dispatchUser } = useContext(User);
+  const { dispatchAdmin } = useContext(AdminContext);
+
   const handleFormSubmit = async (event) => {
     event.preventDefault();
     try {
-      const res = await axios.post(`/login`, {
+      const res = await axios.post(`/admin/login`, {
         username: event.target.username.value,
         password: event.target.password.value,
       });
@@ -19,42 +20,32 @@ const LoginUser = () => {
         //Successfully Logged in
         toast.success("Sucessfully Logged in");
         try {
-          // Update the user context
+          // Update the admin context
           const res = await axios.get(`/currentUser`);
           if (res.status === 200) {
-            dispatchUser({
-              type: ADD_USER,
-              user: {
+            dispatchAdmin({
+              type: ADD_ADMIN,
+              admin: {
                 username: res.data.username,
                 email: res.data.email,
                 isLoggedIn: true,
                 id: res.data.id,
-                itemsInCart: res.data.itemsInCart,
                 role: res.data.role,
               },
             });
+            navigate("/admin/dashboard");
           }
         } catch (err) {
           console.log(err);
         }
-        // dispatchUser({
-        //   type: ADD_USER,
-        //   user: {
-        //     username: res.data.username,
-        //     email: res.data.email,
-        //     isLoggedIn: true,
-        //     id: res.data.id,
-        //   },
-        // });
-        navigate("/");
       }
     } catch (err) {
-      toast.error("Invalid Username or password");
-      // console.log(err);
+      toast.error(err.response.data.message);
+      console.log(err);
     }
   };
 
   return <LoginForm handleFormSubmit={handleFormSubmit} />;
 };
 
-export default LoginUser;
+export default LoginAdmin;

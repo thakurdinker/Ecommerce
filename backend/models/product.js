@@ -11,6 +11,10 @@ const productSchema = new Schema({
   brand: {
     type: String,
   },
+  seller: {
+    type: Schema.Types.ObjectId,
+    ref: "User",
+  },
   main_image: {
     type: String,
   },

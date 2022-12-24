@@ -101,9 +101,12 @@ const ShowProduct = (props) => {
   };
 
   useEffect(() => {
+    const controller = new AbortController();
     async function fetchData() {
       // fetch product
-      const res1 = await axios.get(`/products/${id}`);
+      const res1 = await axios.get(`/products/${id}`, {
+        signal: controller.signal,
+      });
       setProduct(res1.data);
       //fetch all reviews for that product
       const res2 = await axios.get(`/products/${id}/review`);
@@ -111,91 +114,100 @@ const ShowProduct = (props) => {
     }
     fetchData();
     dispatch({ type: HIDE_SEARCH_FILED });
+
+    // Cleanup
+    return () => {
+      controller.abort();
+    };
   }, [id, dispatch]);
 
   return (
-    <div className="container mt-2">
-      <div className="row">
-        <div className="col-md-6">
-          <div className="card card_1">
-            <img
-              src={product.main_image}
-              className="card-img-top show_page_image"
-              alt=""
-            />
-            <div className="card-body">
-              <h5 className="card-title">{product.title}</h5>
-            </div>
-            <ul className="list-group list-group-flush">
-              <li className="list-group-item">
-                <strong>
-                  Price: {product.price} {product.currency}
-                </strong>
-              </li>
-              <li className="list-group-item">
-                Category: {product.primary_category}, {product.sub_category_1},{" "}
-                {product.sub_category_2}
-              </li>
-            </ul>
-            <div className="card-body">
-              <button
-                className="btn btn-primary d-block mb-3 w-100"
-                onClick={handleCart}
-              >
-                Add to Cart
-              </button>
-              <button className="btn btn-primary d-block w-100">Buy Now</button>
-            </div>
-          </div>
-        </div>
-        <div className="col-md-6">
-          <div className="card card_2">
-            <div className="card-body ">
-              <p className="card-text">
-                <strong>Product description: </strong>
-                <br />
-                {product.description}
-              </p>
+    <>
+      <div className="container mt-2">
+        <div className="row">
+          <div className="col-md-6">
+            <div className="card card_1">
+              <img
+                src={product.main_image}
+                className="card-img-top show_page_image"
+                alt=""
+              />
+              <div className="card-body">
+                <h5 className="card-title">{product.title}</h5>
+              </div>
+              <ul className="list-group list-group-flush">
+                <li className="list-group-item">
+                  <strong>
+                    Price: {product.price} {product.currency}
+                  </strong>
+                </li>
+                <li className="list-group-item">
+                  Category: {product.primary_category}, {product.sub_category_1}
+                  , {product.sub_category_2}
+                </li>
+              </ul>
+              <div className="card-body">
+                <button
+                  className="btn btn-primary d-block mb-3 w-100"
+                  onClick={handleCart}
+                >
+                  Add to Cart
+                </button>
+                <button className="btn btn-primary d-block w-100">
+                  Buy Now
+                </button>
+              </div>
             </div>
           </div>
+          <div className="col-md-6">
+            <div className="card card_2">
+              <div className="card-body ">
+                <p className="card-text">
+                  <strong>Product description: </strong>
+                  <br />
+                  {product.description}
+                </p>
+              </div>
+            </div>
 
-          {/* List all Reviews */}
-          <h5>Reviews:-</h5>
-          {recievedReviews.length !== 0 &&
-            recievedReviews.map(function (review) {
-              return (
-                <div key={review._id} className="card card_3 mb-1">
-                  <div className="card-body ">
-                    <p
-                      className="starability-result"
-                      data-rating={review.rating}
-                    >
-                      Rated: {review.rating} stars
-                    </p>
-                    <h6>{review.author.username}</h6>
-                    <p className="card-text">{review.body}</p>
-                    {user.isLoggedIn && review.author._id === user.id && (
-                      <button
-                        className="btn btn-danger"
-                        onClick={() => handleDelete(review._id)}
+            {/* List all Reviews */}
+            <h5>Reviews:-</h5>
+            {recievedReviews.length !== 0 &&
+              recievedReviews.map(function (review) {
+                return (
+                  <div key={review._id} className="card card_3 mb-1">
+                    <div className="card-body ">
+                      <p
+                        className="starability-result"
+                        data-rating={review.rating}
                       >
-                        Delete
-                      </button>
-                    )}
+                        Rated: {review.rating} stars
+                      </p>
+                      <h6>{review.author.username}</h6>
+                      <p className="card-text">{review.body}</p>
+                      {user.isLoggedIn && review.author._id === user.id && (
+                        <button
+                          className="btn btn-danger"
+                          onClick={() => handleDelete(review._id)}
+                        >
+                          Delete
+                        </button>
+                      )}
+                    </div>
                   </div>
-                </div>
-              );
-            })}
-          {/* Leave a Review */}
-          <Review
-            reviewBody={reviewBody}
-            handleRatingChange={handleRatingChange}
-            handleReviewBody={handleReviewBody}
-            handleSubmit={handleSubmit}
-          />
+                );
+              })}
+            {/* Leave a Review */}
+            <Review
+              reviewBody={reviewBody}
+              handleRatingChange={handleRatingChange}
+              handleReviewBody={handleReviewBody}
+              handleSubmit={handleSubmit}
+            />
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

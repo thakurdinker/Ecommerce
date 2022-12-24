@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import RegisterForm from "../../components/register/registerForm";
 
-const RegisterUser = () => {
+const RegisterAdmin = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     username: "",
@@ -21,12 +21,12 @@ const RegisterUser = () => {
   const handleFormSubmit = async (event) => {
     event.preventDefault();
     try {
-      const { data } = await axios.post(`/register`, {
+      const { data } = await axios.post(`/admin/register`, {
         formData,
       });
       toast(`User successfully registered`);
       console.log(data.message);
-      navigate("/login");
+      navigate("/admin");
     } catch (err) {
       toast(
         `Something happened. Please try again. Status Code: ${err.response.status} Error: ${err.response.data.message}`
@@ -43,4 +43,4 @@ const RegisterUser = () => {
   );
 };
 
-export default RegisterUser;
+export default RegisterAdmin;

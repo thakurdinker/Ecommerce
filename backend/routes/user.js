@@ -22,4 +22,13 @@ router.route("/logout").post((req, res) => {
   });
 });
 
+// Admin routes
+router.route("/admin/register").post(userController.registerAdmin);
+router
+  .route("/admin/login")
+  .post(
+    passport.authenticate("local", { failureRedirect: "/login" }),
+    userController.adminLogin
+  );
+
 module.exports = router;

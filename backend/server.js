@@ -72,7 +72,7 @@ app.use("/currentUser", async (req, res) => {
   if (req.user === undefined) {
     return res.status(404).json({ message: "User not Logged In" });
   }
-  const { username, email, _id } = req.user;
+  const { username, email, _id, role } = req.user;
   // Get no. of items in the cart
   const cart = await Cart.findOne({ user: req.user });
   res.status(200).json({
@@ -80,6 +80,7 @@ app.use("/currentUser", async (req, res) => {
     email: email,
     id: _id,
     itemsInCart: cart ? cart.items.length : 0,
+    role: role === undefined ? 0 : role,
   });
 });
 
