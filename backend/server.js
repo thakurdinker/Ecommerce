@@ -11,6 +11,8 @@ const productRouter = require("./routes/products");
 const reviewRouter = require("./routes/review");
 const userRouter = require("./routes/user");
 const cartRouter = require("./routes/cart");
+const adminProductRouter = require("./routes/adminProducts");
+
 const User = require("./models/user");
 const Cart = require("./models/cart");
 const PORT = process.env.PORT || 4000;
@@ -62,6 +64,7 @@ passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
+app.use("/admin/products", adminProductRouter);
 app.use("/products", productRouter);
 app.use("/products/:id/review", reviewRouter);
 app.use("/user/:userID/cart", cartRouter);

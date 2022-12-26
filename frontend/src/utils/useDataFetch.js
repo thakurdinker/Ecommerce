@@ -1,25 +1,25 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect } from "react";
 import axios from "axios";
 
-const useDataFetch = async (url) => {
-  const dataFetch = useRef(false);
-  const [data, setData] = useState("");
+const useDataFecth = (url, setData) => {
   useEffect(() => {
-    if (!dataFetch.current) {
-      console.log("useDataFetch");
-      dataFetch.current = true;
-      async function fetchData() {
-        try {
-          const res = await axios.get(url);
-          setData(res.data);
-        } catch (e) {
-          setData(e);
-        }
+    const controller = new AbortController();
+    async function fetchData() {
+      try {
+        const res = await axios.get(url, { signal: controller.signal });
+        setData(res.data);
+      } catch (err) {
+        console.log(err);
       }
-      fetchData();
-      return [data, setData];
     }
-  }, [data, url]);
+
+    fetchData();
+
+    // Cleanup
+    return () => {
+      controller.abort();
+    };
+  }, [url, setData]);
 };
 
-export default useDataFetch;
+export { useDataFecth };

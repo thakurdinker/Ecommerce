@@ -13,6 +13,7 @@ router
     userController.login
   );
 
+// Common for both admin and user
 router.route("/logout").post((req, res) => {
   req.logOut((err) => {
     if (!err) {

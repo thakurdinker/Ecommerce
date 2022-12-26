@@ -7,7 +7,9 @@ import LoginForm from "../../components/login/loginForm";
 
 const LoginUser = () => {
   const navigate = useNavigate();
+
   const { dispatchUser } = useContext(User);
+
   const handleFormSubmit = async (event) => {
     event.preventDefault();
     try {
@@ -37,15 +39,6 @@ const LoginUser = () => {
         } catch (err) {
           console.log(err);
         }
-        // dispatchUser({
-        //   type: ADD_USER,
-        //   user: {
-        //     username: res.data.username,
-        //     email: res.data.email,
-        //     isLoggedIn: true,
-        //     id: res.data.id,
-        //   },
-        // });
         navigate("/");
       }
     } catch (err) {

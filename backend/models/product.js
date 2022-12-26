@@ -31,8 +31,8 @@ const productSchema = new Schema({
   price: {
     type: Number,
   },
-  availibility: {
-    type: String,
+  stock: {
+    type: Number,
   },
   primary_category: {
     type: String,

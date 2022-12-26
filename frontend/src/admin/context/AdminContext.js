@@ -61,8 +61,6 @@ export const AdminContextProvider = ({ children }) => {
     };
   }, []);
 
-  console.log(admin);
-
   return (
     <AdminContext.Provider value={{ admin, dispatchAdmin }}>
       {children}

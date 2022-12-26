@@ -7,7 +7,7 @@ import { ADD_ADMIN, AdminContext } from "../../admin/context/AdminContext";
 
 const LoginAdmin = () => {
   const navigate = useNavigate();
-  const { dispatchAdmin } = useContext(AdminContext);
+  // const { dispatchAdmin } = useContext(AdminContext);
 
   const handleFormSubmit = async (event) => {
     event.preventDefault();
@@ -19,25 +19,19 @@ const LoginAdmin = () => {
       if (res.status === 200) {
         //Successfully Logged in
         toast.success("Sucessfully Logged in");
-        try {
-          // Update the admin context
-          const res = await axios.get(`/currentUser`);
-          if (res.status === 200) {
-            dispatchAdmin({
-              type: ADD_ADMIN,
-              admin: {
-                username: res.data.username,
-                email: res.data.email,
-                isLoggedIn: true,
-                id: res.data.id,
-                role: res.data.role,
-              },
-            });
-            navigate("/admin/dashboard");
-          }
-        } catch (err) {
-          console.log(err);
-        }
+
+        // Update admin context
+        // dispatchAdmin({
+        //   type: ADD_ADMIN,
+        //   admin: {
+        //     username: res.data.username,
+        //     email: res.data.email,
+        //     isLoggedIn: true,
+        //     id: res.data.id,
+        //     role: res.data.role,
+        //   },
+        // });
+        navigate("/admin/dashboard");
       }
     } catch (err) {
       toast.error(err.response.data.message);

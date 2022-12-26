@@ -16,6 +16,9 @@ import AdminDashboard from "./pages/admin/dashboard";
 import NavBar from "./components/NavBar";
 import { UserProvider } from "./contexts/UserContext";
 import { AdminContextProvider } from "./admin/context/AdminContext";
+import ShowAdminProduct from "./pages/admin/showProduct";
+import AdminProtectedPages from "./admin/components/AdminProtectedPages";
+import NavBarAdmin from "./admin/components/Navbar";
 
 function NoMatch() {
   const location = useLocation();
@@ -44,7 +47,10 @@ function WithAdminNav() {
   return (
     <>
       <AdminContextProvider>
-        <Outlet />
+        <NavBarAdmin />
+        <AdminProtectedPages>
+          <Outlet />
+        </AdminProtectedPages>
       </AdminContextProvider>
     </>
   );
@@ -77,10 +83,15 @@ function App() {
           </Route>
 
           {/* Admin Routes */}
+          <Route exact path="/admin" element={<LoginAdmin />} />
+          <Route exact path="/admin/register" element={<RegisterAdmin />} />
           <Route element={<WithAdminNav />}>
-            <Route exact path="/admin" element={<LoginAdmin />} />
-            <Route exact path="/admin/register" element={<RegisterAdmin />} />
             <Route exact path="/admin/dashboard" element={<AdminDashboard />} />
+            <Route
+              exact
+              path="/admin/product/:productId"
+              element={<ShowAdminProduct />}
+            />
           </Route>
         </Routes>
       </NavBarSearchProvider>

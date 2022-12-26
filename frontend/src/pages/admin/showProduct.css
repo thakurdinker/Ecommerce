@@ -1,0 +1,16 @@
+.card_1 {
+  height: 650px;
+  overflow: hidden;
+}
+
+.card_2 {
+  height: fit-content;
+}
+
+.show_page_image {
+  height: 300px;
+}
+
+.card_3 {
+  height: fit-content;
+}

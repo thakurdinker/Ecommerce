@@ -34,6 +34,7 @@ db.once("open", () => {
       });
       data.images = images;
       data.seller = mongoose.Types.ObjectId("63a578744e6aa99329846984");
+      data.stock = 10;
       results.push(data);
     })
     .on("end", async () => {
