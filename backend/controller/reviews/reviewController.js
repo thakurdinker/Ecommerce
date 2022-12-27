@@ -32,3 +32,15 @@ module.exports.delete = catchAsync(async (req, res) => {
   });
   res.status(200).json({ message: "Review Deleted" });
 });
+
+// Admin delete review
+module.exports.adminDelete = catchAsync(async (req, res) => {
+  const { productId, reviewId } = req.params;
+
+  if (!productId && !reviewId) {
+    return res.status(400).json({ message: "BAD REQUEST" });
+  }
+
+  const deletedReview = await Review.findByIdAndDelete(reviewId);
+  res.status(200).json({ deletedReview });
+});

@@ -17,7 +17,17 @@ const ShowAdminProduct = () => {
 
   useDataFecth(`/admin/products/${productId}`, setData);
 
-  const handleDelete = async (reviewID) => {
+  const handleProductDelete = async () => {
+    try {
+      const res = await axios.delete(`/admin/products/${productId}`);
+      console.log(res.data.message);
+      navigate("/admin/dashboard");
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const handleReviewDelete = async (reviewID) => {
     const res = await axios.delete(
       `/admin/products/${productId}/review/${reviewID}`
     );
@@ -40,7 +50,11 @@ const ShowAdminProduct = () => {
         <>
           <div className="container mt-2">
             {editing ? (
-              <EditProduct product={data.product} isEditing={isEditing} />
+              <EditProduct
+                product={data.product}
+                isEditing={isEditing}
+                navigate={navigate}
+              />
             ) : (
               <div className="row">
                 <div className="col-md-6">
@@ -71,7 +85,12 @@ const ShowAdminProduct = () => {
                         >
                           Edit
                         </button>
-                        <button className="btn btn-danger">Delete</button>
+                        <button
+                          className="btn btn-danger"
+                          onClick={handleProductDelete}
+                        >
+                          Delete
+                        </button>
                       </li>
                     </ul>
                   </div>
@@ -104,7 +123,7 @@ const ShowAdminProduct = () => {
                             <p className="card-text">{review.body}</p>
                             <button
                               className="btn btn-danger"
-                              onClick={() => handleDelete(review._id)}
+                              onClick={() => handleReviewDelete(review._id)}
                             >
                               Delete
                             </button>
