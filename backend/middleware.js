@@ -30,7 +30,27 @@ const isReviewAuthor = async (req, res, next) => {
   next();
 };
 
+const isUser = (req, res, next) => {
+  const { role } = req.user;
+  if (role !== undefined && role !== 0) {
+    console.log("Not a user");
+    return res.status(401).json({ message: "Not authorized" });
+  }
+  next();
+};
+
+const isAdmin = (req, res, next) => {
+  const { role } = req.user;
+  if (role !== 1) {
+    console.log("Not admin");
+    return res.status(401).json({ message: "Not authorized" });
+  }
+  next();
+};
+
 module.exports = {
   isLoggedIn,
   isReviewAuthor,
+  isUser,
+  isAdmin,
 };

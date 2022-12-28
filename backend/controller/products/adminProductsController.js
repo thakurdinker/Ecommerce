@@ -49,5 +49,7 @@ module.exports.delete = catchAsync(async (req, res) => {
   }
 
   await Products.findByIdAndDelete(productId);
+  // Also delete the reviews associated with the product
+  await Review.deleteMany({ product: mongoose.Types.ObjectId(productId) });
   res.status(200).json({ message: "Deleted Product" });
 });

@@ -1,12 +1,12 @@
 const express = require("express");
-const { isLoggedIn } = require("../middleware");
+const { isLoggedIn, isUser } = require("../middleware");
 const router = express.Router({ mergeParams: true });
 const cartController = require("../controller/cart/cartController");
 
 router
   .route("/")
-  .get(isLoggedIn, cartController.getCart)
-  .post(isLoggedIn, cartController.addToCart)
-  .delete(isLoggedIn, cartController.deleteItem);
+  .get(isLoggedIn, isUser, cartController.getCart)
+  .post(isLoggedIn, isUser, cartController.addToCart)
+  .delete(isLoggedIn, isUser, cartController.deleteItem);
 
 module.exports = router;

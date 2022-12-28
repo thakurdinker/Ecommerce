@@ -19,6 +19,7 @@ import { AdminContextProvider } from "./admin/context/AdminContext";
 import ShowAdminProduct from "./pages/admin/showProduct";
 import AdminProtectedPages from "./admin/components/AdminProtectedPages";
 import NavBarAdmin from "./admin/components/Navbar";
+import UserProtectedPages from "./components/UserProtectedPages";
 
 function NoMatch() {
   const location = useLocation();
@@ -37,7 +38,9 @@ function WithUserNav() {
     <>
       <UserProvider>
         <NavBar />
-        <Outlet />
+        <UserProtectedPages>
+          <Outlet />
+        </UserProtectedPages>
       </UserProvider>
     </>
   );
@@ -73,12 +76,12 @@ function App() {
         ></ToastContainer>
         <Routes>
           {/* User routes */}
+          <Route exact path="/login" element={<LoginUser />} />
+          <Route exact path="/register" element={<RegisterUser />} />
           <Route element={<WithUserNav />}>
             <Route exact path="/" element={<AllProducts />} />
             <Route exact path="/products/:id" element={<ShowProduct />} />
             <Route exact path="/user/:userID/cart" element={<Cart />} />
-            <Route exact path="/login" element={<LoginUser />} />
-            <Route exact path="/register" element={<RegisterUser />} />
             <Route path="*" element={<NoMatch />} />
           </Route>
 

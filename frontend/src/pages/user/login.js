@@ -8,7 +8,7 @@ import LoginForm from "../../components/login/loginForm";
 const LoginUser = () => {
   const navigate = useNavigate();
 
-  const { dispatchUser } = useContext(User);
+  // const { dispatchUser } = useContext(User);
 
   const handleFormSubmit = async (event) => {
     event.preventDefault();
@@ -24,17 +24,17 @@ const LoginUser = () => {
           // Update the user context
           const res = await axios.get(`/currentUser`);
           if (res.status === 200) {
-            dispatchUser({
-              type: ADD_USER,
-              user: {
-                username: res.data.username,
-                email: res.data.email,
-                isLoggedIn: true,
-                id: res.data.id,
-                itemsInCart: res.data.itemsInCart,
-                role: res.data.role,
-              },
-            });
+            // dispatchUser({
+            //   type: ADD_USER,
+            //   user: {
+            //     username: res.data.username,
+            //     email: res.data.email,
+            //     isLoggedIn: true,
+            //     id: res.data.id,
+            //     itemsInCart: res.data.itemsInCart,
+            //     role: res.data.role,
+            //   },
+            // });
           }
         } catch (err) {
           console.log(err);

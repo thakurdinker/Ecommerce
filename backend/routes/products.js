@@ -1,5 +1,6 @@
 const express = require("express");
 const productsController = require("../controller/products/productsController");
+const { isUser } = require("../middleware");
 
 const router = express.Router({ mergeParams: true });
 
