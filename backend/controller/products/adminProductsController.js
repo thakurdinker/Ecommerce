@@ -2,6 +2,7 @@ const catchAsync = require("../../utils/catchAsync");
 const Products = require("../../models/product");
 const Review = require("../../models/review");
 const mongoose = require("mongoose");
+const User = require("../../models/user");
 
 module.exports.allProducts = catchAsync(async (req, res) => {
   const products = await Products.find({ seller: req.user });
@@ -10,6 +11,20 @@ module.exports.allProducts = catchAsync(async (req, res) => {
     res.status(200).json({ products: [] });
   }
   res.status(200).json({ products: products });
+});
+
+module.exports.addProduct = catchAsync(async (req, res) => {
+  const { productData } = req.body;
+  if (!productData || Object.keys(productData).length === 0) {
+    return res.status(400).json({ message: "BAD REQUEST" });
+  }
+
+  const newProduct = new Products({ ...productData });
+  newProduct.seller = await User.findById(req.user._id);
+
+  await newProduct.save();
+
+  res.status(200).json({ message: "Product Saved Successfully" });
 });
 
 module.exports.getProduct = catchAsync(async (req, res) => {

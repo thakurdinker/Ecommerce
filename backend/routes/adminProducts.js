@@ -5,7 +5,10 @@ const adminProductsController = require("../controller/products/adminProductsCon
 const reviewController = require("../controller/reviews/reviewController");
 const { isAdmin, isLoggedIn } = require("../middleware");
 
-router.route("/").get(isLoggedIn, isAdmin, adminProductsController.allProducts);
+router
+  .route("/")
+  .get(isLoggedIn, isAdmin, adminProductsController.allProducts)
+  .post(isLoggedIn, isAdmin, adminProductsController.addProduct);
 
 router
   .route("/:productId")

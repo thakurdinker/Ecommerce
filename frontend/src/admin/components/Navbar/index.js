@@ -55,7 +55,7 @@ const NavBarAdmin = () => {
               <a
                 className="nav-link"
                 aria-current="page"
-                href="/admin/dashboard"
+                href="/admin/product/add"
               >
                 Add Product
               </a>

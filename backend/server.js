@@ -6,6 +6,7 @@ const cookieParser = require("cookie-parser");
 const session = require("express-session");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
+const MongoDBStore = require("connect-mongo");
 
 const productRouter = require("./routes/products");
 const reviewRouter = require("./routes/review");
@@ -18,6 +19,7 @@ const Cart = require("./models/cart");
 const PORT = process.env.PORT || 4000;
 
 const dbURL = "mongodb://127.0.0.1:27017/ecommerce";
+const secret = "Thisisabadsecret";
 
 mongoose.set("strictQuery", false);
 
@@ -35,9 +37,22 @@ db.once("open", () => {
   console.log("DATABASE CONNECTED");
 });
 
+const store = MongoDBStore.create({
+  mongoUrl: dbURL,
+  touchAfter: 24 * 3600,
+  crypto: {
+    secret: secret,
+  },
+});
+
+store.on("error", function (e) {
+  console.log("SESSION STORE ERROR");
+});
+
 const sessionConfig = {
+  store: store,
   name: "session",
-  secret: "thisisabadsecret",
+  secret: secret,
   resave: false,
   saveUninitialized: true,
   cookie: {
