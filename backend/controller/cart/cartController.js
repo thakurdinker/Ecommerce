@@ -14,7 +14,12 @@ module.exports.getCart = async (req, res) => {
 
   const cart = await Cart.findOne({ user: user })
     .populate("user")
-    .populate("items");
+    .populate({
+      path: "items",
+      populate: {
+        path: "product",
+      },
+    });
 
   if (!cart) {
     return res.status(404).json({ error: "Cart not available" });
@@ -25,7 +30,7 @@ module.exports.getCart = async (req, res) => {
 
 module.exports.addToCart = async (req, res) => {
   const { userID } = req.params;
-  const { productId } = req.body;
+  const { productId, qty } = req.body;
   const user = await User.findById(userID);
   const product = await Products.findById(productId);
 
@@ -37,14 +42,16 @@ module.exports.addToCart = async (req, res) => {
   let cart = await Cart.findOne({ user: user });
   if (cart) {
     // cart exists for current user
-    cart.items.push(product);
+    const items = { qty: qty, product: product };
+    cart.items.push(items);
     await cart.save();
     return res.status(200).json({ message: "Saved Product to cart" });
   }
 
   // Otherwise create a new cart
   cart = new Cart({ user: user });
-  cart.items.push(product);
+  const items = { qty: qty, product: product };
+  cart.items.push(items);
   await cart.save();
   res
     .status(200)
@@ -63,8 +70,9 @@ module.exports.deleteItem = async (req, res) => {
     return res.status(404).json({ error: "No cart Found" });
   }
 
-  await cart.updateOne({ $pull: { items: mongoose.Types.ObjectId(itemId) } });
+  await cart.updateOne({
+    $pull: { items: { product: mongoose.Types.ObjectId(itemId) } },
+  });
   await cart.save();
-  //   console.log(`Deleting item from cart ${itemId}`);
   res.status(200).json({ message: "Item deleted" });
 };

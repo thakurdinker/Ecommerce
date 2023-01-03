@@ -12,6 +12,7 @@ const productRouter = require("./routes/products");
 const reviewRouter = require("./routes/review");
 const userRouter = require("./routes/user");
 const cartRouter = require("./routes/cart");
+const buyRouter = require("./routes/buy");
 const adminProductRouter = require("./routes/adminProducts");
 
 const User = require("./models/user");
@@ -82,6 +83,7 @@ passport.deserializeUser(User.deserializeUser());
 app.use("/admin/products", adminProductRouter);
 app.use("/products", productRouter);
 app.use("/products/:id/review", reviewRouter);
+app.use("/products/:id/buy", buyRouter);
 app.use("/user/:userID/cart", cartRouter);
 app.use("/", userRouter);
 

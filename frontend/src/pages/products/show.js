@@ -18,6 +18,7 @@ const ShowProduct = (props) => {
   const [rating, setRating] = useState(null);
   const [reviewBody, setReviewBody] = useState("");
   const [recievedReviews, setRecievedReviews] = useState([]);
+  const [qty, setQty] = useState("1");
 
   const { dispatch } = useContext(NavBarSearchContext);
   const { user, dispatchUser } = useContext(User);
@@ -40,10 +41,16 @@ const ShowProduct = (props) => {
       navigate("/login");
       return;
     }
+
+    if (product.stock === 0) {
+      toast.error("Out of Stock");
+      return;
+    }
     // Add item to cart
     try {
       const res = await axios.post(`/user/${user.id}/cart`, {
         productId: product._id,
+        qty: qty,
       });
       if (res.status === 200) {
         toast.success("Added to Cart");
@@ -52,6 +59,29 @@ const ShowProduct = (props) => {
 
       // console.log(res);
       // console.log(user.id);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const handleBuyNow = async () => {
+    if (!user.isLoggedIn) {
+      toast.info("Please, Login first");
+      navigate("/login");
+      return;
+    }
+
+    if (product.stock === 0) {
+      toast.error("Out of Stock");
+      return;
+    }
+
+    try {
+      const res = await axios.post(`/products/${product._id}/buy`, {
+        qty: qty,
+      });
+      toast.info(res.data.message);
+      document.location.reload();
     } catch (err) {
       console.log(err);
     }
@@ -147,13 +177,37 @@ const ShowProduct = (props) => {
                 </li>
               </ul>
               <div className="card-body">
+                <div className="mb-3">
+                  {product.stock === 0 ? (
+                    <h5 className="text-danger text-center">Out of Stock</h5>
+                  ) : (
+                    <>
+                      <label htmlFor="qty" className="form-label">
+                        <strong> Quantity </strong>
+                      </label>
+                      <input
+                        type="number"
+                        min={1}
+                        max={product.stock}
+                        className="form-control"
+                        id="qty"
+                        name="qty"
+                        value={qty}
+                        onChange={(e) => setQty(e.target.value)}
+                      />
+                    </>
+                  )}
+                </div>
                 <button
                   className="btn btn-primary d-block mb-3 w-100"
                   onClick={handleCart}
                 >
                   Add to Cart
                 </button>
-                <button className="btn btn-primary d-block w-100">
+                <button
+                  className="btn btn-primary d-block w-100"
+                  onClick={handleBuyNow}
+                >
                   Buy Now
                 </button>
               </div>

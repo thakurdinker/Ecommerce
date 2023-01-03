@@ -33,7 +33,7 @@ db.once("open", () => {
         image.trim();
       });
       data.images = images;
-      data.seller = mongoose.Types.ObjectId("63a578744e6aa99329846984");
+      data.seller = mongoose.Types.ObjectId("63b3ee43cfe4b16802ac9dbf");
       data.stock = 10;
       results.push(data);
     })

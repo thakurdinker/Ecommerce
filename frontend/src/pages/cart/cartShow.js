@@ -31,6 +31,7 @@ const Cart = () => {
   }, [user.id, user.isLoggedIn, navigate]);
 
   const handlebtnClick = async (itemId) => {
+    console.log(itemId);
     try {
       const res = await axios.delete(`/user/${user.id}/cart`, {
         data: { itemId },
@@ -41,7 +42,7 @@ const Cart = () => {
         // Update State
         setCart((prevCart) => {
           const updatedItems = prevCart.items.filter(
-            (item) => item._id !== itemId
+            (item) => item.product._id !== itemId
           );
           prevCart.items = updatedItems;
           return prevCart;
@@ -49,6 +50,28 @@ const Cart = () => {
       }
     } catch (err) {
       toast.error(err.response.data);
+    }
+  };
+
+  const handleBuyNow = async () => {
+    if (!user.isLoggedIn) {
+      toast.info("Please, Login first");
+      navigate("/login");
+      return;
+    }
+    try {
+      cart.items.forEach(async (item) => {
+        const res = await axios.post(`/products/${item.product._id}/buy`, {
+          qty: item.qty,
+        });
+
+        console.log(res.data.message);
+        await handlebtnClick(item.product._id);
+      });
+      toast.success("Order(s) placed");
+    } catch (err) {
+      console.log(err);
+      toast.err(err.response);
     }
   };
 
@@ -64,42 +87,47 @@ const Cart = () => {
         <h1 className="text-center">
           Your cart {`(${cart.items.length} Items)`}
         </h1>
-        <div className="container">
-          <table className="table">
-            <thead>
-              <tr>
-                <th scope="col">Item</th>
-                <th scope="col">Price</th>
-                <th scope="col">Quantity</th>
-                <th scope="col">Total</th>
-              </tr>
-            </thead>
-            <tbody>
-              {cart.items.map(function (item) {
-                return (
-                  <tr key={item._id}>
-                    <th scope="row">
-                      {item.title} <br />{" "}
-                      <button
-                        className="btn"
-                        onClick={() => handlebtnClick(item._id)}
-                      >
-                        <FontAwesomeIcon icon={faTrash} />
-                      </button>
-                    </th>
-                    <td>
-                      {item.price} {item.currency}
-                    </td>
-                    <td>1</td>
-                    <td>
-                      {item.price * 1} {item.currency}
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
+        {cart.items.length !== 0 && (
+          <div className="container">
+            <table className="table">
+              <thead>
+                <tr>
+                  <th scope="col">Item</th>
+                  <th scope="col">Price</th>
+                  <th scope="col">Quantity</th>
+                  <th scope="col">Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                {cart.items.map(function (item) {
+                  return (
+                    <tr key={item._id}>
+                      <th scope="row">
+                        {item.product.title} <br />{" "}
+                        <button
+                          className="btn"
+                          onClick={() => handlebtnClick(item.product._id)}
+                        >
+                          <FontAwesomeIcon icon={faTrash} />
+                        </button>
+                      </th>
+                      <td>
+                        {item.product.price} {item.product.currency}
+                      </td>
+                      <td>{item.qty}</td>
+                      <td>
+                        {item.product.price * item.qty} {item.product.currency}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+            <button className="btn btn-primary" onClick={handleBuyNow}>
+              Checkout
+            </button>
+          </div>
+        )}
       </>
     );
   }

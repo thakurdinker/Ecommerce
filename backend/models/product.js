@@ -33,6 +33,7 @@ const productSchema = new Schema({
   },
   stock: {
     type: Number,
+    min: [1, "Stock must be greater than zero"],
   },
   primary_category: {
     type: String,
@@ -47,6 +48,18 @@ const productSchema = new Schema({
     type: String,
   },
 });
+
+productSchema.methods.checkStock = function (qty) {
+  if (this.stock < qty) {
+    return false;
+  }
+
+  if (this.stock === 0) {
+    return false;
+  }
+
+  return true;
+};
 
 const Products = mongoose.model("Products", productSchema);
 

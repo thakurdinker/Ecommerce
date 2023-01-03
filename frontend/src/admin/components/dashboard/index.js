@@ -34,7 +34,7 @@ const Dashboard = () => {
                         {product.title}
                       </Link>
                     </td>
-                    <td>{10}</td>
+                    <td>{product.stock}</td>
                     <td>
                       {product.price} {product.currency}
                     </td>
