@@ -6,7 +6,6 @@ const Dashboard = () => {
   const [data, setData] = useState({});
 
   useDataFecth("/admin/products", setData);
-
   return (
     <>
       <div className="container">
@@ -14,7 +13,7 @@ const Dashboard = () => {
         {!data.products || data.products.length === 0 ? (
           <h5 className="text-center">You don't have any products</h5>
         ) : (
-          <table className="table table-striped">
+          <table className="table">
             <thead className="thead-dark">
               <tr>
                 <th scope="col">S.No</th>
@@ -27,7 +26,10 @@ const Dashboard = () => {
             <tbody>
               {data.products.map(function (product, index) {
                 return (
-                  <tr key={product._id}>
+                  <tr
+                    key={product._id}
+                    className={product.stock === 0 ? "text-danger table-danger" : "table-primary"}
+                  >
                     <th scope="row">{index + 1}</th>
                     <td>
                       <Link to={`/admin/product/${product._id}`}>

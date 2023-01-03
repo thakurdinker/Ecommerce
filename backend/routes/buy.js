@@ -1,9 +1,10 @@
 const express = require("express");
+const { isLoggedIn, isUser } = require("../middleware");
 const Products = require("../models/product");
 
 const router = express.Router({ mergeParams: true });
 
-router.route("/").post(async (req, res) => {
+router.route("/").post(isLoggedIn, isUser, async (req, res) => {
   const { qty } = req.body;
   const { id } = req.params;
   if (Object.keys(req.body).length === 0 || !qty) {
