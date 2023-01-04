@@ -14,7 +14,10 @@ const AddProductForm = () => {
     sub_category_1: "",
     sub_category_2: "",
     description: "",
+    productImages: null,
   });
+
+  const [uploaded, setUploaded] = useState(false);
 
   const handleInputChange = (event) => {
     const temp = {
@@ -27,18 +30,65 @@ const AddProductForm = () => {
   };
 
   const handleFormSubmit = async (event) => {
-    event.preventDefault();
-    console.log(productData);
-    // Send form data to server
-    try {
-      const res = await axios.post(`/admin/products`, {
-        productData,
-      });
-      toast.success(res.data.message);
-      //   document.location.reload();
-    } catch (err) {
-      toast.error(err.response.data.message);
+    if (!checkImages()) {
+      event.preventDefault();
+      return;
     }
+
+    // console.log(productData);
+    // // Send form data to server
+    // try {
+    //   const res = await axios.post(`/admin/products`, {
+    //     ...productData,
+    //   });
+    //   toast.success(res.data.message);
+    //   // navigate(`/admin/product/${res.data.productId}`);
+    // } catch (err) {
+    //   toast.error(err.response.data.message);
+    // }
+  };
+
+  const checkImages = () => {
+    const images = document.getElementById("productImages");
+
+    const allowedFormats = ["jpg", "jpeg", "png"];
+
+    if (images.files.length === 0) {
+      toast.info("Please select Images");
+      return false;
+    }
+
+    //Max 3 files allowed
+    if (images.files.length > 3) {
+      toast.error("Max 3  Files allowed");
+      return false;
+    }
+
+    // Only JPEG, JPG and PNG formats allowed
+    for (let i = 0; i < images.files.length; i++) {
+      if (
+        !allowedFormats.includes(
+          images.files[i].name.slice(
+            (Math.max(0, images.files[i].name.lastIndexOf(".")) || Infinity) + 1
+          )
+        )
+      ) {
+        toast.error("Only JPEG, JPG and PNG formats allowed");
+        return false;
+      }
+    }
+
+    return true;
+  };
+
+  const handleImagesChange = (event) => {
+    const temp = {
+      [event.target.name]: event.target.files,
+    };
+
+    setProductData((prevData) => {
+      return Object.assign({}, { ...prevData }, { ...temp });
+    });
   };
 
   return (
@@ -46,7 +96,12 @@ const AddProductForm = () => {
       <h1 className="text-center mb-3">Add Product</h1>
       <div className="row">
         <div className="col-md-6 offset-3">
-          <form onSubmit={handleFormSubmit}>
+          <form
+            onSubmit={handleFormSubmit}
+            method="POST"
+            action="/admin/products"
+            encType="multipart/form-data"
+          >
             <div className="row">
               <div className="col-md-6">
                 <div className="mb-3">
@@ -60,6 +115,7 @@ const AddProductForm = () => {
                     name="title"
                     value={productData.title}
                     onChange={handleInputChange}
+                    required
                   />
                 </div>
               </div>
@@ -76,6 +132,7 @@ const AddProductForm = () => {
                     name="brand"
                     value={productData.brand}
                     onChange={handleInputChange}
+                    required
                   />
                 </div>
               </div>
@@ -96,6 +153,7 @@ const AddProductForm = () => {
                     value={productData.price}
                     step="any"
                     onChange={handleInputChange}
+                    required
                   />
                 </div>
               </div>
@@ -113,6 +171,7 @@ const AddProductForm = () => {
                     step="any"
                     value={productData.stock}
                     onChange={handleInputChange}
+                    required
                   />
                 </div>
               </div>
@@ -129,6 +188,7 @@ const AddProductForm = () => {
                     name="primary_category"
                     value={productData.primary_category}
                     onChange={handleInputChange}
+                    required
                   />
                 </div>
               </div>
@@ -148,6 +208,7 @@ const AddProductForm = () => {
                     name="sub_category_1"
                     value={productData.sub_category_1}
                     onChange={handleInputChange}
+                    required
                   />
                 </div>
               </div>
@@ -163,8 +224,36 @@ const AddProductForm = () => {
                     name="sub_category_2"
                     value={productData.sub_category_2}
                     onChange={handleInputChange}
+                    required
                   />
                 </div>
+              </div>
+            </div>
+
+            <div className="mb-3">
+              <label htmlFor="productImages" className="form-label">
+                <strong>Select Images</strong>
+              </label>
+              <div className="input-group">
+                <input
+                  type="file"
+                  className="form-control"
+                  id="productImages"
+                  name="productImages"
+                  multiple
+                  required
+                  onChange={handleImagesChange}
+                />
+                {/* <button
+                  className={`btn ${uploaded ? "btn-success" : "btn-primary"}`}
+                  type="button"
+                  id="uploadImagesbtn"
+                  name="uploadImagesbtn"
+                  onClick={handleImageUpload}
+                  disabled={uploaded}
+                >
+                  {uploaded ? "Uploaded" : "Upload"}
+                </button> */}
               </div>
             </div>
 
@@ -179,6 +268,7 @@ const AddProductForm = () => {
                 name="description"
                 value={productData.description}
                 onChange={handleInputChange}
+                required
               ></textarea>
             </div>
             <button type="submit" className="btn btn-warning w-100">

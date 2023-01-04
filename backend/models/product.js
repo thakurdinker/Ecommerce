@@ -16,7 +16,7 @@ const productSchema = new Schema({
     ref: "User",
   },
   main_image: {
-    type: String,
+    type: String, 
   },
   images: [String],
   description: {

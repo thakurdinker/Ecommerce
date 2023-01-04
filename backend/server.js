@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+const path = require("path");
 const cors = require("cors");
 const mongoose = require("mongoose");
 const cookieParser = require("cookie-parser");
@@ -17,6 +18,7 @@ const adminProductRouter = require("./routes/adminProducts");
 
 const User = require("./models/user");
 const Cart = require("./models/cart");
+const multer = require("multer");
 const PORT = process.env.PORT || 4000;
 
 const dbURL = "mongodb://127.0.0.1:27017/ecommerce";
@@ -63,6 +65,7 @@ const sessionConfig = {
   },
 };
 
+app.use(express.static(path.join(__dirname, "uploads")));
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -109,6 +112,10 @@ app.use("*", (req, res) => {
 });
 
 app.use((err, req, res, next) => {
+  if (err instanceof multer.MulterError) {
+    // A Multer error occurred when uploading.
+    return res.status(statusCode).json({ message: "Multer error occured" });
+  }
   const { statusCode = 500, message } = err;
   console.log("Error Handler: ");
   console.log(err);

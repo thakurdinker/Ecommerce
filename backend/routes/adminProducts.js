@@ -5,10 +5,42 @@ const adminProductsController = require("../controller/products/adminProductsCon
 const reviewController = require("../controller/reviews/reviewController");
 const { isAdmin, isLoggedIn } = require("../middleware");
 
+const multer = require("multer");
+
+const allowedFormats = ["jpg", "jpeg", "png"];
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "uploads/");
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    cb(
+      null,
+      file.fieldname + "-" + uniqueSuffix + "." + file.mimetype.split("/")[1]
+    );
+  },
+});
+
+const fileFilter = (req, file, cb) => {
+  if (allowedFormats.includes(file.mimetype.split("/")[1])) {
+    cb(null, true);
+  } else {
+    cb(null, false);
+  }
+};
+
+const upload = multer({ storage: storage, fileFilter });
+
 router
   .route("/")
   .get(isLoggedIn, isAdmin, adminProductsController.allProducts)
-  .post(isLoggedIn, isAdmin, adminProductsController.addProduct);
+  .post(
+    isLoggedIn,
+    isAdmin,
+    upload.array("productImages"),
+    adminProductsController.addProduct
+  );
 
 router
   .route("/:productId")

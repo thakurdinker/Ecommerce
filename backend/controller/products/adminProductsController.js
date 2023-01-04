@@ -14,17 +14,26 @@ module.exports.allProducts = catchAsync(async (req, res) => {
 });
 
 module.exports.addProduct = catchAsync(async (req, res) => {
-  const { productData } = req.body;
-  if (!productData || Object.keys(productData).length === 0) {
-    return res.status(400).json({ message: "BAD REQUEST" });
+  const productData = req.body;
+  if (
+    !productData ||
+    Object.keys(productData).length === 0 ||
+    req.files === undefined
+  ) {
+    return res.status(400).json({ message: "Error adding product" });
   }
 
   const newProduct = new Products({ ...productData });
   newProduct.seller = await User.findById(req.user._id);
-
+  newProduct.main_image = `http://localhost:4000/${req.files[0].filename}`;
+  // newProduct.images.push(req.files);
   await newProduct.save();
 
-  res.status(200).json({ message: "Product Saved Successfully" });
+  res.redirect(`/admin/product/${newProduct._id}`);
+
+  // res
+  //   .status(200)
+  //   .json({ message: "Product Saved Successfully", productId: newProduct._id });
 });
 
 module.exports.getProduct = catchAsync(async (req, res) => {
