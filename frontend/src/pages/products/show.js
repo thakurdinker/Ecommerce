@@ -11,10 +11,23 @@ import "../../stylesheets/star.css";
 import Review from "../../components/Review/review";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import Carousel from "../../components/Carousel";
 
 const ShowProduct = (props) => {
   const { id } = useParams();
-  const [product, setProduct] = useState({});
+  const [product, setProduct] = useState({
+    title: "",
+    brand: "",
+    images: [],
+    description: "",
+    price: null,
+    stock: null,
+    primary_category: "",
+    sub_category_1: "",
+    sub_category_2: "",
+    seller: "",
+    main_image: "",
+  });
   const [rating, setRating] = useState(null);
   const [reviewBody, setReviewBody] = useState("");
   const [recievedReviews, setRecievedReviews] = useState([]);
@@ -134,13 +147,21 @@ const ShowProduct = (props) => {
     const controller = new AbortController();
     async function fetchData() {
       // fetch product
-      const res1 = await axios.get(`/products/${id}`, {
-        signal: controller.signal,
-      });
-      setProduct(res1.data);
+      try {
+        const res1 = await axios.get(`/products/${id}`, {
+          signal: controller.signal,
+        });
+        setProduct(res1.data);
+      } catch (err) {
+        console.log(err);
+      }
       //fetch all reviews for that product
-      const res2 = await axios.get(`/products/${id}/review`);
-      setRecievedReviews(res2.data.reviews);
+      try {
+        const res2 = await axios.get(`/products/${id}/review`);
+        setRecievedReviews(res2.data.reviews);
+      } catch (err) {
+        console.log(err);
+      }
     }
     fetchData();
     dispatch({ type: HIDE_SEARCH_FILED });
@@ -157,11 +178,12 @@ const ShowProduct = (props) => {
         <div className="row">
           <div className="col-md-6">
             <div className="card card_1">
-              <img
+              {/* <img
                 src={product.main_image}
                 className="card-img-top show_page_image"
                 alt=""
-              />
+              /> */}
+              <Carousel images={product.images} />
               <div className="card-body">
                 <h5 className="card-title">{product.title}</h5>
               </div>

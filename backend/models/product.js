@@ -33,7 +33,7 @@ const productSchema = new Schema({
   },
   stock: {
     type: Number,
-    min: [1, "Stock must be greater than zero"],
+    min: [0, "Stock must be greater than zero"],
   },
   primary_category: {
     type: String,

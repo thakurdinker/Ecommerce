@@ -45,7 +45,12 @@ router
 router
   .route("/:productId")
   .get(isLoggedIn, isAdmin, adminProductsController.getProduct)
-  .post(isLoggedIn, isAdmin, adminProductsController.update)
+  .post(
+    isLoggedIn,
+    isAdmin,
+    upload.array("productImages"),
+    adminProductsController.update
+  )
   .delete(isLoggedIn, isAdmin, adminProductsController.delete);
 
 router

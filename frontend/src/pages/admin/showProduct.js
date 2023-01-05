@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 
 import "../../stylesheets/star.css";
 import EditProduct from "../../admin/components/EditProduct";
+import Carousel from "../../components/Carousel";
 
 const ShowAdminProduct = () => {
   const { productId } = useParams();
@@ -59,11 +60,12 @@ const ShowAdminProduct = () => {
               <div className="row">
                 <div className="col-md-6">
                   <div className="card card_1">
-                    <img
-                      src={data.product.main_image}
+                    {/* <img
+                      src={data.product.images[0]}
                       className="card-img-top show_page_image"
                       alt=""
-                    />
+                    /> */}
+                    <Carousel images={data.product.images} />
                     <div className="card-body">
                       <h5 className="card-title">{data.product.title}</h5>
                     </div>
@@ -107,28 +109,31 @@ const ShowAdminProduct = () => {
                   </div>
 
                   {/* List all Reviews */}
-                  <h5>Reviews:-</h5>
                   {data.reviews &&
                     data.reviews.length !== 0 &&
                     data.reviews.map(function (review) {
                       return (
-                        <div key={review._id} className="card card_3 mb-1">
-                          <div className="card-body ">
-                            <p
-                              className="starability-result"
-                              data-rating={review.rating}
-                            >
-                              Rated: {review.rating} stars
-                            </p>
-                            <p className="card-text">{review.body}</p>
-                            <button
-                              className="btn btn-danger"
-                              onClick={() => handleReviewDelete(review._id)}
-                            >
-                              Delete
-                            </button>
+                        <>
+                          <h5>Reviews:-</h5>
+
+                          <div key={review._id} className="card card_3 mb-1">
+                            <div className="card-body ">
+                              <p
+                                className="starability-result"
+                                data-rating={review.rating}
+                              >
+                                Rated: {review.rating} stars
+                              </p>
+                              <p className="card-text">{review.body}</p>
+                              <button
+                                className="btn btn-danger"
+                                onClick={() => handleReviewDelete(review._id)}
+                              >
+                                Delete
+                              </button>
+                            </div>
                           </div>
-                        </div>
+                        </>
                       );
                     })}
                 </div>
