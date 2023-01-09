@@ -81,6 +81,15 @@ const ShowAdminProduct = () => {
                         {data.product.sub_category_2}
                       </li>
                       <li className="list-group-item">
+                        {data.product.stock !== 0 ? (
+                          <h5 className="text-success">
+                            Stock Left: {data.product.stock}
+                          </h5>
+                        ) : (
+                          <h5 className="text-danger">Out of Stock</h5>
+                        )}
+                      </li>
+                      <li className="list-group-item">
                         <button
                           className="btn btn-info me-2"
                           onClick={() => isEditing(true)}

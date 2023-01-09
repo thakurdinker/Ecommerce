@@ -14,7 +14,7 @@ const Dashboard = () => {
           <h5 className="text-center">You don't have any products</h5>
         ) : (
           <table className="table">
-            <thead className="thead-dark">
+            <thead className="table-dark">
               <tr>
                 <th scope="col">S.No</th>
                 <th scope="col">Name</th>

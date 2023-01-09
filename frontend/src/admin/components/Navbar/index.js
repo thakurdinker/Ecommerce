@@ -60,6 +60,11 @@ const NavBarAdmin = () => {
                 Add Product
               </a>
             </li>
+            <li className="nav-item">
+              <a className="nav-link" aria-current="page" href="/admin/orders">
+                Orders
+              </a>
+            </li>
           </ul>
 
           <ul className="navbar-nav ms-auto">

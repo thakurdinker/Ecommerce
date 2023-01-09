@@ -15,6 +15,7 @@ const userRouter = require("./routes/user");
 const cartRouter = require("./routes/cart");
 const buyRouter = require("./routes/buy");
 const adminProductRouter = require("./routes/adminProducts");
+const orderRouter = require("./routes/orders");
 
 const User = require("./models/user");
 const Cart = require("./models/cart");
@@ -88,6 +89,7 @@ app.use("/products", productRouter);
 app.use("/products/:id/review", reviewRouter);
 app.use("/products/:id/buy", buyRouter);
 app.use("/user/:userID/cart", cartRouter);
+app.use("/user/:userID/orders", orderRouter);
 app.use("/", userRouter);
 
 // Get info about current user to populate the user context on the client side

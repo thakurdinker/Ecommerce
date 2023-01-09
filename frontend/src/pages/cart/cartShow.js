@@ -60,14 +60,16 @@ const Cart = () => {
       return;
     }
     try {
-      cart.items.forEach(async (item) => {
+      for (let item of cart.items) {
         const res = await axios.post(`/products/${item.product._id}/buy`, {
           qty: item.qty,
         });
-
         console.log(res.data.message);
-        await handlebtnClick(item.product._id);
-      });
+        if (res.status === 200) {
+          // Remove product from the cart
+          await handlebtnClick(item.product._id);
+        }
+      }
       toast.success("Order(s) placed");
     } catch (err) {
       console.log(err);

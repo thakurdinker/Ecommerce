@@ -21,6 +21,7 @@ import AdminProtectedPages from "./admin/components/AdminProtectedPages";
 import NavBarAdmin from "./admin/components/Navbar";
 import UserProtectedPages from "./components/UserProtectedPages";
 import AddProduct from "./pages/admin/addProduct";
+import Orders from "./pages/admin/orders";
 
 function NoMatch() {
   const location = useLocation();
@@ -97,6 +98,7 @@ function App() {
               element={<ShowAdminProduct />}
             />
             <Route exact path="/admin/product/add" element={<AddProduct />} />
+            <Route exact path="/admin/orders" element={<Orders />} />
           </Route>
         </Routes>
       </NavBarSearchProvider>
