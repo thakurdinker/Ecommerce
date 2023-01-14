@@ -5,9 +5,11 @@ import { toast } from "react-toastify";
 import { DECREMENT_CART, User } from "../../contexts/UserContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import CheckOut from "../../components/Checkout";
 
 const Cart = () => {
   const [cart, setCart] = useState({});
+  const [checkout, setCheckout] = useState(false);
 
   const navigate = useNavigate();
 
@@ -19,6 +21,7 @@ const Cart = () => {
         const res = await axios.get(`/user/${user.id}/cart`);
         if (res.status === 200) {
           setCart(res.data.cart);
+          setCheckout(localStorage.getItem("checkout"));
         }
       } catch (err) {
         console.log(err);
@@ -30,7 +33,7 @@ const Cart = () => {
     fetchCart();
   }, [user.id, user.isLoggedIn, navigate]);
 
-  const handlebtnClick = async (itemId) => {
+  const handleDeletebtnClick = async (itemId) => {
     console.log(itemId);
     try {
       const res = await axios.delete(`/user/${user.id}/cart`, {
@@ -67,7 +70,7 @@ const Cart = () => {
         console.log(res.data.message);
         if (res.status === 200) {
           // Remove product from the cart
-          await handlebtnClick(item.product._id);
+          await handleDeletebtnClick(item.product._id);
         }
       }
       toast.success("Order(s) placed");
@@ -76,6 +79,10 @@ const Cart = () => {
       toast.err(err.response);
     }
   };
+
+  if (checkout) {
+    return <CheckOut cart={cart} handleDelete={handleDeletebtnClick} />;
+  }
 
   if (!cart.user) {
     return (
@@ -108,7 +115,7 @@ const Cart = () => {
                         {item.product.title} <br />{" "}
                         <button
                           className="btn"
-                          onClick={() => handlebtnClick(item.product._id)}
+                          onClick={() => handleDeletebtnClick(item.product._id)}
                         >
                           <FontAwesomeIcon icon={faTrash} />
                         </button>
@@ -125,9 +132,20 @@ const Cart = () => {
                 })}
               </tbody>
             </table>
-            <button className="btn btn-primary" onClick={handleBuyNow}>
-              Checkout
-            </button>
+            <div className="d-grid gap-2 d-md-flex justify-content-md-end">
+              <button
+                className="btn btn-primary"
+                onClick={() => {
+                  localStorage.setItem("checkout", true);
+                  setCheckout(true);
+                }}
+              >
+                Checkout
+              </button>
+              <button className="btn btn-warning" onClick={() => navigate(-1)}>
+                Go Back
+              </button>
+            </div>
           </div>
         )}
       </>

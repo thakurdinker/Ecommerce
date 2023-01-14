@@ -64,7 +64,7 @@ module.exports.deleteItem = async (req, res) => {
   if (!itemId && !userID) {
     return res.status(400).json({ error: "Bad Request" });
   }
-  const user = await User.lfindById(userID);
+  const user = await User.findById(userID);
   const cart = await Cart.findOne({ user: user });
   if (!user && !cart) {
     return res.status(404).json({ error: "No cart Found" });
