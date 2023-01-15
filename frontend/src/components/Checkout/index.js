@@ -1,4 +1,6 @@
+import axios from "axios";
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 const CheckOut = ({ cart, handleDelete }) => {
   const [orderSummary, setSummary] = useState({
@@ -6,6 +8,19 @@ const CheckOut = ({ cart, handleDelete }) => {
     taxes: 0,
     shipping: 0,
     total: 0,
+  });
+
+  const [newAddress, setNewAddress] = useState(false);
+
+  const [formInput, setFormInput] = useState({
+    firstName: "",
+    lastName: "",
+    phoneNo: "",
+    email: "",
+    streetAddress: "",
+    landmark: "",
+    city: "",
+    postalCode: "",
   });
 
   useEffect(() => {
@@ -25,6 +40,40 @@ const CheckOut = ({ cart, handleDelete }) => {
       );
     });
   }, [cart.items]);
+
+  const handleFormInput = (e) => {
+    const temp = {
+      [e.target.name]: e.target.value,
+    };
+
+    setFormInput((prevFormInput) => {
+      return Object.assign({}, { ...prevFormInput }, { ...temp });
+    });
+  };
+
+  const handleAddressSubmit = async (e) => {
+    e.preventDefault();
+    console.log(formInput);
+    try {
+      const res = await axios.post("/user/address", {
+        formInput,
+      });
+      if (res.status === 200) {
+        // Enable the PAYMENT ACOORDION
+        const secondAccordionbtn =
+          document.getElementById("secondAccordionbtn");
+        secondAccordionbtn.disabled = false;
+        secondAccordionbtn.click();
+      }
+    } catch (e) {
+      console.log(e.response.message);
+      toast.error(e.response.message);
+    }
+  };
+
+  const handleSavedAddress = () => {
+    console.log("Saved Address");
+  };
 
   return (
     <div className="container mt-3">
@@ -52,137 +101,218 @@ const CheckOut = ({ cart, handleDelete }) => {
                 data-bs-parent="#accordionExample"
               >
                 <div className="accordion-body">
-                  <form
-                    method="POST"
-                    action="/admin/products"
-                    encType="multipart/form-data"
-                  >
-                    <div className="row">
-                      <div className="col-md-6">
-                        <div className="mb-3">
-                          <label htmlFor="firstName" className="form-label">
-                            <strong>First Name</strong>
-                          </label>
-                          <input
-                            type="text"
-                            className="form-control"
-                            id="firstName"
-                            name="firstName"
-                            required
-                          />
+                  {cart.user.addresses.length !== 0 && !newAddress && (
+                    // Saved addresses cards
+                    <>
+                      <div className="form-check">
+                        <div className="row">
+                          {cart.user.addresses.map(function (address) {
+                            return (
+                              <div className="col-6" key={address._id}>
+                                <input
+                                  className="form-check-input"
+                                  type="radio"
+                                  name="savedAddress"
+                                  id={address._id}
+                                  value={address}
+                                />
+                                <label
+                                  className="form-check-label"
+                                  htmlFor={address._id}
+                                >
+                                  <strong>
+                                    {address.firstName} {address.lastName}{" "}
+                                    <br />
+                                    {address.phoneNo}
+                                    <br />
+                                    {address.email}
+                                    <br />
+                                    {address.streetAddress}
+                                    <br />
+                                    {address.landmark}
+                                    <br />
+                                    {address.city}
+                                    <br />
+                                    {address.postalCode}
+                                  </strong>
+                                </label>
+                              </div>
+                            );
+                          })}
                         </div>
                       </div>
 
-                      <div className="col-md-6">
-                        <div className="mb-3">
-                          <label htmlFor="lastName" className="form-label">
-                            <strong> Last Name </strong>
-                          </label>
-                          <input
-                            type="text"
-                            className="form-control"
-                            id="lastName"
-                            name="lastName"
-                            required
-                          />
+                      {/* Submit selected Address */}
+                      <div className="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <button
+                          className="btn btn-primary"
+                          onClick={handleSavedAddress}
+                        >
+                          Continue
+                        </button>
+                        <button
+                          className="btn btn-primary"
+                          onClick={() => setNewAddress(true)}
+                        >
+                          Add New
+                        </button>
+                      </div>
+                    </>
+                  )}
+
+                  {newAddress && (
+                    <form onSubmit={handleAddressSubmit}>
+                      <div className="row">
+                        {cart.user.addresses.length !== 0 && (
+                          <button
+                            className="btn mb-3 text-primary"
+                            onClick={() => setNewAddress(false)}
+                          >
+                            View Saved Addresses
+                          </button>
+                        )}
+                        <div className="col-md-6">
+                          <div className="mb-3">
+                            <label htmlFor="firstName" className="form-label">
+                              <strong>First Name</strong>
+                            </label>
+                            <input
+                              type="text"
+                              className="form-control"
+                              id="firstName"
+                              name="firstName"
+                              value={formInput.firstName}
+                              onChange={handleFormInput}
+                              required
+                            />
+                          </div>
+                        </div>
+
+                        <div className="col-md-6">
+                          <div className="mb-3">
+                            <label htmlFor="lastName" className="form-label">
+                              <strong> Last Name </strong>
+                            </label>
+                            <input
+                              type="text"
+                              className="form-control"
+                              id="lastName"
+                              name="lastName"
+                              value={formInput.lastName}
+                              onChange={handleFormInput}
+                              required
+                            />
+                          </div>
                         </div>
                       </div>
-                    </div>
 
-                    <div className="row">
-                      <div className="col-md-6">
-                        <div className="mb-3">
-                          <label htmlFor="phoneNo" className="form-label">
-                            <strong>Phone Number</strong>
-                          </label>
-                          <input
-                            type="text"
-                            className="form-control"
-                            id="phoneNo"
-                            name="phoneNo"
-                            required
-                          />
+                      <div className="row">
+                        <div className="col-md-6">
+                          <div className="mb-3">
+                            <label htmlFor="phoneNo" className="form-label">
+                              <strong>Phone Number</strong>
+                            </label>
+                            <input
+                              type="text"
+                              className="form-control"
+                              id="phoneNo"
+                              name="phoneNo"
+                              value={formInput.phoneNo}
+                              onChange={handleFormInput}
+                              required
+                            />
+                          </div>
+                        </div>
+
+                        <div className="col-md-6">
+                          <div className="mb-3">
+                            <label htmlFor="email" className="form-label">
+                              <strong> Email </strong>
+                            </label>
+                            <input
+                              type="email"
+                              className="form-control"
+                              id="email"
+                              name="email"
+                              value={formInput.email}
+                              onChange={handleFormInput}
+                              required
+                            />
+                          </div>
                         </div>
                       </div>
 
-                      <div className="col-md-6">
-                        <div className="mb-3">
-                          <label htmlFor="email" className="form-label">
-                            <strong> Email </strong>
-                          </label>
-                          <input
-                            type="email"
-                            className="form-control"
-                            id="email"
-                            name="email"
-                            required
-                          />
+                      <div className="mb-3">
+                        <label htmlFor="streetAddress" className="form-label">
+                          <strong> Street Address </strong>
+                        </label>
+                        <input
+                          type="text"
+                          className="form-control"
+                          id="streetAddress"
+                          name="streetAddress"
+                          value={formInput.streetAddress}
+                          onChange={handleFormInput}
+                          required
+                        />
+                      </div>
+
+                      <div className="mb-3">
+                        <label htmlFor="landmark" className="form-label">
+                          <strong> Landmark (optional) </strong>
+                        </label>
+                        <input
+                          type="text"
+                          className="form-control"
+                          id="landmark"
+                          name="landmark"
+                          value={formInput.landmark}
+                          onChange={handleFormInput}
+                        />
+                      </div>
+
+                      <div className="row">
+                        <div className="col-md-6">
+                          <div className="mb-3">
+                            <label htmlFor="city" className="form-label">
+                              <strong>City</strong>
+                            </label>
+                            <input
+                              type="text"
+                              className="form-control"
+                              id="city"
+                              name="city"
+                              value={formInput.city}
+                              onChange={handleFormInput}
+                              required
+                            />
+                          </div>
+                        </div>
+                        <div className="col-md-6">
+                          <div className="mb-3">
+                            <label htmlFor="postalCode" className="form-label">
+                              <strong>Postal Code</strong>
+                            </label>
+                            <input
+                              type="text"
+                              className="form-control"
+                              id="postalCode"
+                              name="postalCode"
+                              value={formInput.postalCode}
+                              onChange={handleFormInput}
+                              required
+                            />
+                          </div>
                         </div>
                       </div>
-                    </div>
 
-                    <div className="mb-3">
-                      <label htmlFor="streetAddress" className="form-label">
-                        <strong> Street Address </strong>
-                      </label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        id="streetAddress"
-                        name="streetAddress"
-                        required
-                      />
-                    </div>
-
-                    <div className="mb-3">
-                      <label htmlFor="landmark" className="form-label">
-                        <strong> Landmark (optional) </strong>
-                      </label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        id="landmark"
-                        name="landmark"
-                      />
-                    </div>
-
-                    <div className="row">
-                      <div className="col-md-6">
-                        <div className="mb-3">
-                          <label htmlFor="city" className="form-label">
-                            <strong>City</strong>
-                          </label>
-                          <input
-                            type="text"
-                            className="form-control"
-                            id="city"
-                            name="city"
-                            required
-                          />
-                        </div>
+                      <div className="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <button type="submit" className="btn btn-primary">
+                          Continue
+                        </button>
                       </div>
-                      <div className="col-md-6">
-                        <div className="mb-3">
-                          <label htmlFor="postalCode" className="form-label">
-                            <strong>Postal Code</strong>
-                          </label>
-                          <input
-                            type="text"
-                            className="form-control"
-                            id="postalCode"
-                            name="postalCode"
-                            required
-                          />
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="d-grid gap-2 d-md-flex justify-content-md-end">
-                      <button type="submit" className="btn btn-primary">
-                        Continue
-                      </button>
-                    </div>
-                  </form>
+                    </form>
+                  )}
                 </div>
               </div>
             </div>
@@ -190,6 +320,7 @@ const CheckOut = ({ cart, handleDelete }) => {
             <div className="accordion-item">
               <h2 className="accordion-header" id="headingTwo">
                 <button
+                  id="secondAccordionbtn"
                   className="accordion-button collapsed"
                   type="button"
                   data-bs-toggle="collapse"
