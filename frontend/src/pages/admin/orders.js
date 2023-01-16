@@ -25,7 +25,7 @@ const Orders = () => {
         <tbody>
           {data.orderData.map(function (orderInfo, index) {
             return (
-              <tr key={orderInfo._id}>
+              <tr key={orderInfo.orderId}>
                 <th scope="row">{index + 1}</th>
                 <td>
                   <table className="table table-sm table-danger align-middle">
@@ -33,6 +33,7 @@ const Orders = () => {
                       <tr>
                         <th scope="col">Product Name</th>
                         <th scope="col">Qty ordered</th>
+                        <th scope="col">Shipping Address</th>
                         <th scope="col">Status</th>
                       </tr>
                     </thead>
@@ -46,7 +47,21 @@ const Orders = () => {
                               </Link>
                             </td>
                             <td>{item.qty}</td>
-                            <td>Nil</td>
+                            <td>
+                              {item.shipping.firstName} {item.shipping.lastName}{" "}
+                              <br />
+                              {item.shipping.phoneNo}
+                              <br />
+                              {item.shipping.email}
+                              <br />
+                              {item.shipping.streetAddress}
+                              <br />
+                              {item.shipping.landmark}
+                              <br />
+                              {item.shipping.city} - {item.shipping.postalCode}
+                              <br />
+                            </td>
+                            <td>{item.status}</td>
                           </tr>
                         );
                       })}

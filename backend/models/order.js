@@ -19,6 +19,15 @@ const orderSchema = new Schema({
         type: Number,
       },
 
+      shipping: {
+        type: Object,
+      },
+      paymentMode: {
+        type: "String",
+      },
+      status: {
+        type: "String",
+      },
       product: { type: Schema.Types.ObjectId, ref: "Products" },
     },
   ],

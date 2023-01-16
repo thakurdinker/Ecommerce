@@ -6,6 +6,10 @@ import { DECREMENT_CART, User } from "../../contexts/UserContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import CheckOut from "../../components/Checkout";
+import {
+  HIDE_SEARCH_FILED,
+  NavBarSearchContext,
+} from "../../contexts/NavSearchContext";
 
 const Cart = () => {
   const [cart, setCart] = useState({});
@@ -14,6 +18,7 @@ const Cart = () => {
   const navigate = useNavigate();
 
   const { user, dispatchUser } = useContext(User);
+  const { dispatch } = useContext(NavBarSearchContext);
 
   useEffect(() => {
     async function fetchCart() {
@@ -31,7 +36,9 @@ const Cart = () => {
       }
     }
     fetchCart();
-  }, [user.id, user.isLoggedIn, navigate]);
+    // Hide search field
+    dispatch({ type: HIDE_SEARCH_FILED });
+  }, [user.id, user.isLoggedIn, navigate, dispatch]);
 
   const handleDeletebtnClick = async (itemId) => {
     console.log(itemId);
@@ -50,13 +57,18 @@ const Cart = () => {
           prevCart.items = updatedItems;
           return prevCart;
         });
+
+        if (cart.items.length === 0) {
+          localStorage.removeItem("checkout");
+          document.location.reload();
+        }
       }
     } catch (err) {
       toast.error(err.response.data);
     }
   };
 
-  const handleBuyNow = async () => {
+  const handleBuyNow = async (shipping, paymentOption, addressIndex) => {
     if (!user.isLoggedIn) {
       toast.info("Please, Login first");
       navigate("/login");
@@ -66,6 +78,8 @@ const Cart = () => {
       for (let item of cart.items) {
         const res = await axios.post(`/products/${item.product._id}/buy`, {
           qty: item.qty,
+          shipping: shipping,
+          paymentOption: paymentOption,
         });
         console.log(res.data.message);
         if (res.status === 200) {
@@ -74,6 +88,8 @@ const Cart = () => {
         }
       }
       toast.success("Order(s) placed");
+      localStorage.clear();
+      navigate("/");
     } catch (err) {
       console.log(err);
       toast.err(err.response);
@@ -81,7 +97,13 @@ const Cart = () => {
   };
 
   if (checkout) {
-    return <CheckOut cart={cart} handleDelete={handleDeletebtnClick} />;
+    return (
+      <CheckOut
+        cart={cart}
+        handleDelete={handleDeletebtnClick}
+        handleBuyNow={handleBuyNow}
+      />
+    );
   }
 
   if (!cart.user) {

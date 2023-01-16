@@ -59,7 +59,7 @@ const AllProducts = (props) => {
   return (
     <>
       <div className="container mt-2">
-        <h1 className="text-center">All Products</h1>
+        {/* <h1 className="text-center">All Products</h1> */}
         <div className="row">{displayProducts(allProducts)}</div>
       </div>
     </>

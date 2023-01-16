@@ -78,26 +78,24 @@ const ShowProduct = (props) => {
   };
 
   const handleBuyNow = async () => {
-    if (!user.isLoggedIn) {
-      toast.info("Please, Login first");
-      navigate("/login");
-      return;
-    }
-
-    if (product.stock === 0) {
-      toast.error("Out of Stock");
-      return;
-    }
-
-    try {
-      const res = await axios.post(`/products/${product._id}/buy`, {
-        qty: qty,
-      });
-      toast.info(res.data.message);
-      document.location.reload();
-    } catch (err) {
-      console.log(err);
-    }
+    // if (!user.isLoggedIn) {
+    //   toast.info("Please, Login first");
+    //   navigate("/login");
+    //   return;
+    // }
+    // if (product.stock === 0) {
+    //   toast.error("Out of Stock");
+    //   return;
+    // }
+    // try {
+    //   const res = await axios.post(`/products/${product._id}/buy`, {
+    //     qty: qty,
+    //   });
+    //   toast.info(res.data.message);
+    //   document.location.reload();
+    // } catch (err) {
+    //   console.log(err);
+    // }
   };
 
   const handleSubmit = async (event) => {
@@ -226,12 +224,12 @@ const ShowProduct = (props) => {
                 >
                   Add to Cart
                 </button>
-                <button
+                {/* <button
                   className="btn btn-primary d-block w-100"
                   onClick={handleBuyNow}
                 >
                   Buy Now
-                </button>
+                </button> */}
               </div>
             </div>
           </div>

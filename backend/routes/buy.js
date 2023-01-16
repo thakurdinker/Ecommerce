@@ -6,7 +6,7 @@ const Products = require("../models/product");
 const router = express.Router({ mergeParams: true });
 
 router.route("/").post(isLoggedIn, isUser, async (req, res) => {
-  const { qty } = req.body;
+  const { qty, paymentOption, shipping } = req.body;
   const { id } = req.params;
   if (Object.keys(req.body).length === 0 || !qty) {
     return res.status(400).json({ message: "BAD REQUEST" });
@@ -27,7 +27,13 @@ router.route("/").post(isLoggedIn, isUser, async (req, res) => {
     if (!order.sellers.includes(product.seller)) {
       order.sellers.push(product.seller);
     }
-    const item = { qty: qty, product: product };
+    const item = {
+      qty: qty,
+      product: product,
+      shipping: shipping,
+      paymentMode: paymentOption,
+      status: "Order Placed",
+    };
     order.items.push(item);
     await order.save();
   } else {
@@ -36,7 +42,13 @@ router.route("/").post(isLoggedIn, isUser, async (req, res) => {
     const newOrder = new Order();
     newOrder.user = req.user;
     newOrder.sellers.push(product.seller);
-    const item = { qty: qty, product: product };
+    const item = {
+      qty: qty,
+      product: product,
+      shipping: shipping,
+      paymentMode: paymentOption,
+      status: "Order Placed",
+    };
     newOrder.items.push(item);
     await newOrder.save();
   }
