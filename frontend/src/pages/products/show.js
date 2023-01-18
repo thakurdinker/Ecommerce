@@ -32,6 +32,7 @@ const ShowProduct = (props) => {
   const [reviewBody, setReviewBody] = useState("");
   const [recievedReviews, setRecievedReviews] = useState([]);
   const [qty, setQty] = useState("1");
+  const [cart, addToCart] = useState([]);
 
   const { dispatch } = useContext(NavBarSearchContext);
   const { user, dispatchUser } = useContext(User);
@@ -60,6 +61,13 @@ const ShowProduct = (props) => {
       return;
     }
     // Add item to cart
+
+    // Check if the item is already in the cart
+    if (cart.includes(product._id)) {
+      toast.info("Item already in cart");
+      return;
+    }
+
     try {
       const res = await axios.post(`/user/${user.id}/cart`, {
         productId: product._id,
@@ -68,6 +76,7 @@ const ShowProduct = (props) => {
       if (res.status === 200) {
         toast.success("Added to Cart");
         dispatchUser({ type: INCREMENT_CART });
+        addToCart(product._id);
       }
 
       // console.log(res);

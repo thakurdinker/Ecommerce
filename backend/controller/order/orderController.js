@@ -22,9 +22,12 @@ module.exports.getOrders = catchAsync(async (req, res) => {
     const orderDetails = items.map(function (item) {
       return {
         qty: item.qty,
-        title: item.product.title,
-        productId: item.product._id,
+        shipping: item.shipping,
+        paymentMode: item.paymentMode,
+        status: item.status,
+        product: item.product,
         sellerName: item.product.seller,
+        orderId: item._id.toString(),
       };
     });
 

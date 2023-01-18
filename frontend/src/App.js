@@ -22,6 +22,7 @@ import NavBarAdmin from "./admin/components/Navbar";
 import UserProtectedPages from "./components/UserProtectedPages";
 import AddProduct from "./pages/admin/addProduct";
 import Orders from "./pages/admin/orders";
+import UserOrders from "./components/UserOrders";
 
 function NoMatch() {
   const location = useLocation();
@@ -82,6 +83,7 @@ function App() {
           <Route exact path="/register" element={<RegisterUser />} />
           <Route element={<WithUserNav />}>
             <Route exact path="/" element={<AllProducts />} />
+            <Route exact path="/user/orders" element={<UserOrders />} />
             <Route exact path="/products/:id" element={<ShowProduct />} />
             <Route exact path="/user/:userID/cart" element={<Cart />} />
             <Route path="*" element={<NoMatch />} />

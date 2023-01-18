@@ -7,8 +7,12 @@ import {
 } from "../../contexts/NavSearchContext";
 import { User, RESET } from "../../contexts/UserContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCartShopping } from "@fortawesome/free-solid-svg-icons";
-import { useNavigate } from "react-router-dom";
+import {
+  faCartShopping,
+  faSearch,
+  faBars,
+} from "@fortawesome/free-solid-svg-icons";
+import { Link, useNavigate } from "react-router-dom";
 
 const NavBar = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -20,6 +24,9 @@ const NavBar = () => {
   const navigate = useNavigate();
 
   const handleInput = (event) => {
+    if (event.target.value.trim() === "") {
+      dispatch({ type: RESET });
+    }
     setSearchQuery(event.target.value);
   };
 
@@ -57,13 +64,11 @@ const NavBar = () => {
   };
 
   return (
-    <nav className="navbar navbar-dark navbar-expand-lg bg-dark">
-      <div className="container-fluid">
-        <a className="navbar-brand" href="/">
-          Navbar
-        </a>
+    <nav className="navbar navbar-dark bg-black navbar-expand-sm">
+      <div className="container ">
         <button
-          className="navbar-toggler"
+          className="navbar-toggler me-3"
+          id="navCollapsebtn"
           type="button"
           data-bs-toggle="collapse"
           data-bs-target="#navbarNav"
@@ -71,19 +76,55 @@ const NavBar = () => {
           aria-expanded="false"
           aria-label="Toggle navigation"
         >
-          <span className="navbar-toggler-icon"></span>
+          {/* <span className="navbar-toggler-icon"></span> */}
+          <FontAwesomeIcon icon={faBars} color="white" />
         </button>
+
+        <Link className="navbar-brand" to={`/`}>
+          Ecommerce
+        </Link>
+
+        {/* For small screens */}
+        <div className="d-inline d-md-none ms-auto pe-3">
+          {state.searchField && (
+            <button className="btn nav-link">
+              <FontAwesomeIcon icon={faSearch} color="white" />
+            </button>
+          )}
+        </div>
+
+        <div className="d-inline d-md-none">
+          <button className="btn nav-link" onClick={goToCart}>
+            <FontAwesomeIcon icon={faCartShopping} color="white" />{" "}
+            <sup style={{ color: "white" }}>{user.itemsInCart}</sup>
+          </button>
+        </div>
+
+        {/* Small screen end */}
+
         <div className="collapse navbar-collapse" id="navbarNav">
-          <ul className="navbar-nav">
+          <ul className="navbar-nav d-block d-md-none">
             <li className="nav-item">
-              <a className="nav-link" aria-current="page" href="/">
-                Home
+              <a
+                className="nav-link"
+                aria-current="page"
+                href="/"
+                style={{ color: "white" }}
+              >
+                My Account
               </a>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="/">
-                Products
-              </a>
+              <Link
+                to={`/user/orders`}
+                className="nav-link"
+                style={{ color: "white" }}
+                onClick={() => {
+                  document.getElementById("navCollapsebtn").click();
+                }}
+              >
+                My Orders
+              </Link>
             </li>
           </ul>
           {state.searchField && (
@@ -92,46 +133,79 @@ const NavBar = () => {
               role="search"
               onSubmit={handleSubmit}
             >
-              <input
-                className="form-control me-2"
-                type="search"
-                aria-label="Search"
-                value={searchQuery}
-                onChange={handleInput}
-              />
-              <button className="btn btn-outline-primary" type="submit">
-                Search
-              </button>
+              <div className="d-none d-md-inline-flex">
+                <input
+                  className="form-control me-2"
+                  type="search"
+                  aria-label="Search"
+                  value={searchQuery}
+                  onChange={handleInput}
+                />
+                <button className="btn btn-warning" type="submit">
+                  Search
+                </button>
+              </div>
             </form>
           )}
 
           <ul className="navbar-nav ms-auto">
-            <li className="nav-item">
+            <li className="nav-item d-none d-md-block">
               <button className="btn nav-link" onClick={goToCart}>
-                <FontAwesomeIcon icon={faCartShopping} />{" "}
-                <sup>{user.itemsInCart}</sup>
+                <FontAwesomeIcon icon={faCartShopping} color="white" />{" "}
+                <sup style={{ color: "white" }}>{user.itemsInCart}</sup>
               </button>
             </li>
             {!user.isLoggedIn && (
               <>
                 <li className="nav-item">
-                  <a className="nav-link" aria-current="page" href="/login">
+                  <a
+                    className="nav-link"
+                    aria-current="page"
+                    href="/login"
+                    style={{ color: "white" }}
+                  >
                     Login
                   </a>
                 </li>
                 <li className="nav-item">
-                  <a className="nav-link" href="/register">
+                  <a
+                    className="nav-link"
+                    href="/register"
+                    style={{ color: "white" }}
+                  >
                     Register
                   </a>
                 </li>
               </>
             )}
             {user.isLoggedIn && (
-              <li className="nav-item">
-                <button className="btn nav-link" onClick={handleLogout}>
-                  Logout
-                </button>
-              </li>
+              <>
+                <li className="nav-item d-none d-md-block">
+                  <button className="btn nav-link" style={{ color: "white" }}>
+                    Account
+                  </button>
+                </li>
+
+                <li className="nav-item d-none d-md-block">
+                  <button
+                    className="btn nav-link"
+                    style={{ color: "white" }}
+                    onClick={() => navigate(`/user/orders`)}
+                  >
+                    Orders
+                  </button>
+                </li>
+
+                <li className="nav-item">
+                  <button
+                    className="btn nav-link"
+                    onClick={handleLogout}
+                    style={{ color: "white" }}
+                  >
+                    Logout
+                  </button>
+                </li>
+              </>
             )}
           </ul>
         </div>

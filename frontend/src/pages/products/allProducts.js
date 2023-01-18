@@ -3,13 +3,13 @@ import axios from "axios";
 import ProductCard from "../../components/ProductCard";
 
 import "./allProducts.css";
-import { NavBarSearchContext } from "../../contexts/NavSearchContext";
+import { NavBarSearchContext, RESET } from "../../contexts/NavSearchContext";
 
 const AllProducts = (props) => {
   const [allProducts, setAllProducts] = useState([]);
   const dataFetch = useRef(false);
 
-  const { state } = useContext(NavBarSearchContext);
+  const { state, dispatch } = useContext(NavBarSearchContext);
 
   useEffect(() => {
     if (!dataFetch.current && !state.searchRequested) {
@@ -26,8 +26,10 @@ const AllProducts = (props) => {
       }
       fetchData();
       dataFetch.current = true;
+      // Show Search field
+      dispatch({ type: RESET });
     }
-  }, [state.searchRequested]);
+  }, [state.searchRequested, dispatch]);
 
   const displayProducts = (products) => {
     if (products.length === 0) {
