@@ -102,7 +102,7 @@ const UserOrders = () => {
 
           <hr className="mt-4" />
 
-          <div id="payment_details" className="">
+          <div id="payment_details">
             <h6 className="text-muted">Payment Details</h6>
             <div className="d-flex justify-content-between">
               <h6>Subtotal</h6>

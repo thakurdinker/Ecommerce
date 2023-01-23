@@ -222,7 +222,14 @@ const ShowProduct = (props) => {
                         id="qty"
                         name="qty"
                         value={qty}
-                        onChange={(e) => setQty(e.target.value)}
+                        onChange={(e) => {
+                          if (e.target.value <= product.stock)
+                            setQty(e.target.value);
+                          else {
+                            e.target.placeholder = `Only ${product.stock} stock(s) available`;
+                            e.target.style.color = "red";
+                          }
+                        }}
                       />
                     </>
                   )}
