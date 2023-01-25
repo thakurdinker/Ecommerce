@@ -1,16 +1,22 @@
-.card_1 {
-  height: 650px;
-  overflow: hidden;
+/* #buyNow button {
+  border-radius: 4em;
+} */
+
+#increment:hover {
+  cursor: pointer;
 }
 
-.card_2 {
-  height: fit-content;
+#decrement:hover {
+  cursor: pointer;
+}
+#qty:hover {
+  cursor: default;
 }
 
-.show_page_image {
-  height: 300px;
-}
-
-.card_3 {
-  height: fit-content;
-}
+/* #buynowbtn,
+#addtocartbtn {
+  padding-top: 1em;
+  padding-bottom: 1em;
+  padding-left: 3em;
+  padding-right: 3em;
+} */

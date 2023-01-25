@@ -12,6 +12,8 @@ import Review from "../../components/Review/review";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import Carousel from "../../components/Carousel";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTruck, faBookBookmark } from "@fortawesome/free-solid-svg-icons";
 
 const ShowProduct = (props) => {
   const { id } = useParams();
@@ -179,121 +181,132 @@ const ShowProduct = (props) => {
     };
   }, [id, dispatch]);
 
+  const calculateAverageRating = () => {
+    let sum = 0;
+    for (let review of recievedReviews) {
+      sum = sum + review.rating;
+    }
+
+    console.log(sum);
+    return Math.floor(sum / recievedReviews.length);
+  };
+
   return (
     <>
       <div className="container mt-2">
         <div className="row">
-          <div className="col-md-6">
-            <div className="card card_1">
-              {/* <img
-                src={product.main_image}
-                className="card-img-top show_page_image"
-                alt=""
-              /> */}
-              <Carousel images={product.images} />
-              <div className="card-body">
-                <h5 className="card-title">{product.title}</h5>
-              </div>
-              <ul className="list-group list-group-flush">
-                <li className="list-group-item">
-                  <strong>
-                    Price: {product.price} {product.currency}
-                  </strong>
-                </li>
-                <li className="list-group-item">
-                  Category: {product.primary_category}, {product.sub_category_1}
-                  , {product.sub_category_2}
-                </li>
-              </ul>
-              <div className="card-body">
-                <div className="mb-3">
-                  {product.stock === 0 ? (
-                    <h5 className="text-danger text-center">Out of Stock</h5>
-                  ) : (
-                    <>
-                      <label htmlFor="qty" className="form-label">
-                        <strong> Quantity </strong>
-                      </label>
-                      <input
-                        type="number"
-                        min={1}
-                        max={product.stock}
-                        className="form-control"
-                        id="qty"
-                        name="qty"
-                        value={qty}
-                        onChange={(e) => {
-                          if (e.target.value <= product.stock)
-                            setQty(e.target.value);
-                          else {
-                            e.target.placeholder = `Only ${product.stock} stock(s) available`;
-                            e.target.style.color = "red";
-                          }
-                        }}
-                      />
-                    </>
-                  )}
-                </div>
-                <button
-                  className="btn btn-primary d-block mb-3 w-100"
-                  onClick={handleCart}
-                >
-                  Add to Cart
-                </button>
-                {/* <button
-                  className="btn btn-primary d-block w-100"
-                  onClick={handleBuyNow}
-                >
-                  Buy Now
-                </button> */}
-              </div>
+          <div className="col col-md-6">
+            <div
+              id="main_image_container"
+              className="mb-4 d-flex justify-content-center align-items-center bg-light"
+            >
+              <img src={product.main_image} alt="" className="img-fluid" />
             </div>
-          </div>
-          <div className="col-md-6">
-            <div className="card card_2">
-              <div className="card-body ">
-                <p className="card-text">
-                  <strong>Product description: </strong>
-                  <br />
-                  {product.description}
-                </p>
-              </div>
-            </div>
-
-            {/* List all Reviews */}
-            <h5>Reviews:-</h5>
-            {recievedReviews.length !== 0 &&
-              recievedReviews.map(function (review) {
+            <div id="secondary_images_container" className="d-flex flex-row">
+              {product.images.map(function (image, index) {
                 return (
-                  <div key={review._id} className="card card_3 mb-1">
-                    <div className="card-body ">
-                      <p
-                        className="starability-result"
-                        data-rating={review.rating}
-                      >
-                        Rated: {review.rating} stars
-                      </p>
-                      <h6>{review.author.username}</h6>
-                      <p className="card-text">{review.body}</p>
-                      {user.isLoggedIn && review.author._id === user.id && (
-                        <button
-                          className="btn btn-danger"
-                          onClick={() => handleDelete(review._id)}
-                        >
-                          Delete
-                        </button>
-                      )}
-                    </div>
+                  <div key={index} className="w-25 p-3 flex-shrink-1 bg-light">
+                    <img src={image} alt="" className="img-fluid" />
                   </div>
                 );
               })}
-            {/* Leave a Review */}
-            <Review
-              reviewBody={reviewBody}
-              handleRatingChange={handleRatingChange}
-              handleReviewBody={handleReviewBody}
-              handleSubmit={handleSubmit}
-            />
+            </div>
+          </div>
+          <div className="col col-md-6">
+            <h4 className="text-start mt-2 fw-bold">{product.title}</h4>
+            <p className="text-truncate text-start mt-4">
+              {product.description}
+            </p>
+            {recievedReviews.length !== 0 && (
+              <p
+                id="average_rating"
+                className="starability-result"
+                data-rating={calculateAverageRating()}
+              >
+                Rated: {calculateAverageRating()} stars (
+                {recievedReviews.length})
+              </p>
+            )}
+            <div className="border-2 border-top border-bottom mt-5 d-flex flex-row justify-content-start align-items-center pt-4 pb-4">
+              <h4 className="text-start fw-bold">${product.price}</h4>
+            </div>
+            <div
+              id="buyNow"
+              className="border-2 border-bottom d-flex flex-column justify-content-between align-items-start pt-4 pb-4"
+            >
+              <div className="d-flex flex-row justify-content-start align-items-center w-100">
+                <div
+                  id="qty_increment"
+                  className="border d-flex w-auto flex-row justify-content-between align-items-center fw-bold bg-light pt-1 pb-1 ps-4 pe-4 rounded-pill"
+                >
+                  <span
+                    id="decrement"
+                    className={`d-inline-block me-4 ${
+                      parseInt(qty) === 1 && "text-muted"
+                    }`}
+                  >
+                    -
+                  </span>
+                  <span id="qty" className="d-inline-block text-success">
+                    {qty}
+                  </span>
+                  <span id="increment" className="d-inline-block ms-4">
+                    +
+                  </span>
+                </div>
+                <p className="ms-2">
+                  {parseInt(product.stock) <= 0 ? (
+                    <span className="fw-bold text-danger">Out of stock</span>
+                  ) : (
+                    <>
+                      {" "}
+                      Only{" "}
+                      <span style={{ color: "orangered" }}>
+                        {product.stock} Items
+                      </span>{" "}
+                      Left!
+                      <br /> Don't miss it
+                    </>
+                  )}
+                </p>
+              </div>
+              <div className="mt-4 d-flex justify-content-start align-items-center w-100">
+                <button
+                  id="buynowbtn"
+                  className="btn btn-success fw-bold rounded-pill me-3 pe-md-3 ps-md-3 pt-md-2 pb-md-2 pe-xl-4 ps-xl-4 pt-xl-2 pb-xl-2"
+                >
+                  Buy Now
+                </button>
+                <button
+                  id="addtocartbtn"
+                  className="btn btn-outline-success fw-bold rounded-pill p-1 pe-md-3 ps-md-3 pt-md-2 pb-md-2 pe-xl-5 ps-xl-5 pt-xl-2 pb-xl-2"
+                >
+                  Add To Cart
+                </button>
+              </div>
+            </div>
+            <div className="border-2 border-bottom ">
+              <div className="border-2 border-bottom pt-2 pb-2 d-flex flex-column justify-content-center align-items-start">
+                <p className="fw-bold mb-0">
+                  <FontAwesomeIcon icon={faTruck} color={"orangered"} />
+                  <span className="d-inline-block ms-2">Free Delivery</span>
+                </p>
+                <p className="text-decoration-underline text-muted">
+                  Enter your postal code for Delivery Availibility
+                </p>
+              </div>
+
+              <div className="d-flex pt-2 pb-2 flex-column justify-content-center align-items-start">
+                <p className="fw-bold mb-0">
+                  <FontAwesomeIcon icon={faBookBookmark} color={"orangered"} />
+                  <span className="d-inline-block ms-2">Return Delivery</span>
+                </p>
+                <p className="text-muted">
+                  Free 30 days Delivery Returns.{" "}
+                  <span className="text-decoration-underline">Details</span>
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -302,3 +315,120 @@ const ShowProduct = (props) => {
 };
 
 export default ShowProduct;
+
+// <div className="container mt-2">
+// <div className="row">
+//   <div className="col-md-6">
+//     <div className="card card_1">
+//       {/* <img
+//         src={product.main_image}
+//         className="card-img-top show_page_image"
+//         alt=""
+//       /> */}
+//       <Carousel images={product.images} />
+//       <div className="card-body">
+//         <h5 className="card-title">{product.title}</h5>
+//       </div>
+//       <ul className="list-group list-group-flush">
+//         <li className="list-group-item">
+//           <strong>
+//             Price: {product.price} {product.currency}
+//           </strong>
+//         </li>
+//         <li className="list-group-item">
+//           Category: {product.primary_category}, {product.sub_category_1}
+//           , {product.sub_category_2}
+//         </li>
+//       </ul>
+//       <div className="card-body">
+//         <div className="mb-3">
+//           {product.stock === 0 ? (
+//             <h5 className="text-danger text-center">Out of Stock</h5>
+//           ) : (
+//             <>
+//               <label htmlFor="qty" className="form-label">
+//                 <strong> Quantity </strong>
+//               </label>
+//               <input
+//                 type="number"
+//                 min={1}
+//                 max={product.stock}
+//                 className="form-control"
+//                 id="qty"
+//                 name="qty"
+//                 value={qty}
+//                 onChange={(e) => {
+//                   if (e.target.value <= product.stock)
+//                     setQty(e.target.value);
+//                   else {
+//                     e.target.placeholder = `Only ${product.stock} stock(s) available`;
+//                     e.target.style.color = "red";
+//                   }
+//                 }}
+//               />
+//             </>
+//           )}
+//         </div>
+//         <button
+//           className="btn btn-primary d-block mb-3 w-100"
+//           onClick={handleCart}
+//         >
+//           Add to Cart
+//         </button>
+//         {/* <button
+//           className="btn btn-primary d-block w-100"
+//           onClick={handleBuyNow}
+//         >
+//           Buy Now
+//         </button> */}
+//       </div>
+//     </div>
+//   </div>
+//   <div className="col-md-6">
+//     <div className="card card_2">
+//       <div className="card-body ">
+//         <p className="card-text">
+//           <strong>Product description: </strong>
+//           <br />
+//           {product.description}
+//         </p>
+//       </div>
+//     </div>
+
+//     {/* List all Reviews */}
+//     <h5>Reviews:-</h5>
+//     {recievedReviews.length !== 0 &&
+//       recievedReviews.map(function (review) {
+//         return (
+//           <div key={review._id} className="card card_3 mb-1">
+//             <div className="card-body ">
+//               <p
+//                 className="starability-result"
+//                 data-rating={review.rating}
+//               >
+//                 Rated: {review.rating} stars
+//               </p>
+//               <h6>{review.author.username}</h6>
+//               <p className="card-text">{review.body}</p>
+//               {user.isLoggedIn && review.author._id === user.id && (
+//                 <button
+//                   className="btn btn-danger"
+//                   onClick={() => handleDelete(review._id)}
+//                 >
+//                   Delete
+//                 </button>
+//               )}
+//             </div>
+//           </div>
+//         );
+//       })}
+//     {/* Leave a Review */}
+//     <Review
+//       reviewBody={reviewBody}
+//       handleRatingChange={handleRatingChange}
+//       handleReviewBody={handleReviewBody}
+//       handleSubmit={handleSubmit}
+//     />
+//   </div>
+// </div>
+// </div>
