@@ -13,7 +13,11 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import Carousel from "../../components/Carousel";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTruck, faBookBookmark } from "@fortawesome/free-solid-svg-icons";
+import {
+  faTruck,
+  faBookBookmark,
+  faUserCircle,
+} from "@fortawesome/free-solid-svg-icons";
 
 const ShowProduct = (props) => {
   const { id } = useParams();
@@ -186,8 +190,6 @@ const ShowProduct = (props) => {
     for (let review of recievedReviews) {
       sum = sum + review.rating;
     }
-
-    console.log(sum);
     return Math.floor(sum / recievedReviews.length);
   };
 
@@ -195,7 +197,7 @@ const ShowProduct = (props) => {
     <>
       <div className="container mt-2">
         <div className="row">
-          <div className="col col-md-6">
+          <div className="col col-md-6 border-bottom">
             <div
               id="main_image_container"
               className="mb-4 d-flex justify-content-center align-items-center bg-light"
@@ -218,14 +220,16 @@ const ShowProduct = (props) => {
               {product.description}
             </p>
             {recievedReviews.length !== 0 && (
-              <p
-                id="average_rating"
-                className="starability-result"
-                data-rating={calculateAverageRating()}
-              >
-                Rated: {calculateAverageRating()} stars (
-                {recievedReviews.length})
-              </p>
+              <div className="d-flex flex-row justify-content-start align-items-start">
+                <p
+                  id="average_rating"
+                  className="starability-result"
+                  data-rating={calculateAverageRating()}
+                ></p>
+                <span className="d-inline-block fw-bold ms-1">
+                  ({recievedReviews.length})
+                </span>
+              </div>
             )}
             <div className="border-2 border-top border-bottom mt-5 d-flex flex-row justify-content-start align-items-center pt-4 pb-4">
               <h4 className="text-start fw-bold">${product.price}</h4>
@@ -307,6 +311,146 @@ const ShowProduct = (props) => {
                 </p>
               </div>
             </div>
+          </div>
+        </div>
+
+        {/* Review Section */}
+        <div className="row">
+          <div className="col-12 col-md-6">
+            <div id="review_section" className="row mt-5">
+              <div className="col-4 col-md-3">
+                <div className="d-flex flex-column justify-content-start align-items-center align-items-md-center h-100">
+                  <h3 className="fw-bold">Review</h3>
+                  <div className="h-100">
+                    <FontAwesomeIcon
+                      icon={faUserCircle}
+                      size="3x"
+                      className=""
+                      color="orangered"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div className="col-8 col-md-9">
+                <form
+                  id="rating_form"
+                  className="d-flex flex-column justify-content-start align-items-start"
+                  onSubmit={handleSubmit}
+                >
+                  <div className="d-flex flex-column justify-content-start align-items-start flex-md-row justify-content-md-start align-items-md-start">
+                    <h5 className="text-muted fw-semibold text-start me-md-3 pt-md-1">
+                      Your rating
+                    </h5>
+                    <fieldset
+                      onChange={handleRatingChange}
+                      className="starability-basic d-flex justify-content-start align-items-center"
+                      aria-required="true"
+                    >
+                      <input
+                        type="radio"
+                        id="no-rate"
+                        className="input-no-rate"
+                        name="review[rating]"
+                        value="0"
+                        aria-label="No rating."
+                        defaultChecked
+                      />
+                      <input
+                        type="radio"
+                        id="first-rate1"
+                        name="review[rating]"
+                        value="1"
+                      />
+                      <label htmlFor="first-rate1" title="Terrible">
+                        1 star
+                      </label>
+                      <input
+                        type="radio"
+                        id="first-rate2"
+                        name="review[rating]"
+                        value="2"
+                      />
+                      <label htmlFor="first-rate2" title="Not good">
+                        2 stars
+                      </label>
+                      <input
+                        type="radio"
+                        id="first-rate3"
+                        name="review[rating]"
+                        value="3"
+                      />
+                      <label htmlFor="first-rate3" title="Average">
+                        3 stars
+                      </label>
+                      <input
+                        type="radio"
+                        id="first-rate4"
+                        name="review[rating]"
+                        value="4"
+                      />
+                      <label htmlFor="first-rate4" title="Very good">
+                        4 stars
+                      </label>
+                      <input
+                        type="radio"
+                        id="first-rate5"
+                        name="review[rating]"
+                        value="5"
+                      />
+                      <label htmlFor="first-rate5" title="Amazing">
+                        5 stars
+                      </label>
+                    </fieldset>
+                  </div>
+                  <div className="w-100">
+                    <textarea
+                      className="form-control"
+                      name="review[body]"
+                      id="reviewBody"
+                      rows="3"
+                      required
+                      value={reviewBody}
+                      onChange={handleReviewBody}
+                    ></textarea>
+                  </div>
+                  <button
+                    type="submit"
+                    className="ps-0 btn btn-default text-success fw-bold"
+                  >
+                    Submit Review
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          {/* All reviews */}
+          <div className="col-12 col-md-6">
+            {recievedReviews.length !== 0 &&
+              recievedReviews.map(function (review) {
+                return (
+                  <div key={review._id} className="border-bottom pt-3">
+                    <div className="d-flex flex-row justify-content-start align-items-start">
+                      <FontAwesomeIcon
+                        className="align-self-center"
+                        icon={faUserCircle}
+                        color="orangered"
+                        size="2x"
+                      />
+                      <div className="ms-2">
+                        <h5 className="fw-bold">{review.author.username}</h5>
+                        <p
+                          className="starability-result"
+                          data-rating={review.rating}
+                        ></p>
+                      </div>
+                    </div>
+                    <p className="text-justified fs-5 text fw-semibold">
+                      {review.body}
+                    </p>
+                  </div>
+                );
+              })}
           </div>
         </div>
       </div>

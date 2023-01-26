@@ -127,22 +127,24 @@ const NavBar = () => {
               </a>
             </li>
           </ul>
-          <form className="d-flex" role="search" onSubmit={handleSubmit}>
-            <input
-              className="form-control me-2"
-              type="search"
-              aria-label="Search"
-              value={searchQuery}
-              onChange={handleInput}
-            />
-            <button
-              className="btn btn-outline-success fw-bold"
-              type="submit"
-              style={{ borderRadius: "2em" }}
-            >
-              Search
-            </button>
-          </form>
+          {state.searchField && (
+            <form className="d-flex" role="search" onSubmit={handleSubmit}>
+              <input
+                className="form-control me-2"
+                type="search"
+                aria-label="Search"
+                value={searchQuery}
+                onChange={handleInput}
+              />
+              <button
+                className="btn btn-outline-success fw-bold"
+                type="submit"
+                style={{ borderRadius: "2em" }}
+              >
+                Search
+              </button>
+            </form>
+          )}
 
           <ul className="navbar-nav ms-3">
             {!user.isLoggedIn && (
