@@ -37,7 +37,7 @@ const ShowProduct = (props) => {
   const [rating, setRating] = useState(null);
   const [reviewBody, setReviewBody] = useState("");
   const [recievedReviews, setRecievedReviews] = useState([]);
-  const [qty, setQty] = useState("1");
+  const [qty, setQty] = useState(1);
   const [cart, addToCart] = useState([]);
 
   const { dispatch } = useContext(NavBarSearchContext);
@@ -197,7 +197,7 @@ const ShowProduct = (props) => {
     <>
       <div className="container mt-2">
         <div className="row">
-          <div className="col col-md-6 border-bottom">
+          <div className="col col-md-6">
             <div
               id="main_image_container"
               className="mb-4 d-flex justify-content-center align-items-center bg-light"
@@ -241,10 +241,19 @@ const ShowProduct = (props) => {
               <div className="d-flex flex-row justify-content-start align-items-center w-100">
                 <div
                   id="qty_increment"
-                  className="border d-flex w-auto flex-row justify-content-between align-items-center fw-bold bg-light pt-1 pb-1 ps-4 pe-4 rounded-pill"
+                  className="border border-2 d-flex w-auto flex-row justify-content-between align-items-center fw-bold bg-light pt-1 pb-1 ps-4 pe-4 rounded-pill"
                 >
                   <span
                     id="decrement"
+                    name="decrement"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (qty > 1) {
+                        setQty((prevQty) => {
+                          return (prevQty = prevQty - 1);
+                        });
+                      }
+                    }}
                     className={`d-inline-block me-4 ${
                       parseInt(qty) === 1 && "text-muted"
                     }`}
@@ -254,7 +263,17 @@ const ShowProduct = (props) => {
                   <span id="qty" className="d-inline-block text-success">
                     {qty}
                   </span>
-                  <span id="increment" className="d-inline-block ms-4">
+                  <span
+                    id="increment"
+                    name="increment"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (qty < product.stock) {
+                        setQty((prevQty) => (prevQty = prevQty + 1));
+                      }
+                    }}
+                    className="d-inline-block ms-4"
+                  >
                     +
                   </span>
                 </div>
@@ -284,12 +303,16 @@ const ShowProduct = (props) => {
                 <button
                   id="addtocartbtn"
                   className="btn btn-outline-success fw-bold rounded-pill p-1 pe-md-3 ps-md-3 pt-md-2 pb-md-2 pe-xl-5 ps-xl-5 pt-xl-2 pb-xl-2"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleCart();
+                  }}
                 >
                   Add To Cart
                 </button>
               </div>
             </div>
-            <div className="border-2 border-bottom ">
+            <div className="">
               <div className="border-2 border-bottom pt-2 pb-2 d-flex flex-column justify-content-center align-items-start">
                 <p className="fw-bold mb-0">
                   <FontAwesomeIcon icon={faTruck} color={"orangered"} />
@@ -315,13 +338,13 @@ const ShowProduct = (props) => {
         </div>
 
         {/* Review Section */}
-        <div className="row">
+        <div className="row mt-3 border-top border-2">
           <div className="col-12 col-md-6">
             <div id="review_section" className="row mt-5">
               <div className="col-4 col-md-3">
                 <div className="d-flex flex-column justify-content-start align-items-center align-items-md-center h-100">
-                  <h3 className="fw-bold">Review</h3>
-                  <div className="h-100">
+                  <span className="fs-5 text fw-semibold">Review</span>
+                  <div className="h-100 mt-2">
                     <FontAwesomeIcon
                       icon={faUserCircle}
                       size="3x"
@@ -338,9 +361,9 @@ const ShowProduct = (props) => {
                   onSubmit={handleSubmit}
                 >
                   <div className="d-flex flex-column justify-content-start align-items-start flex-md-row justify-content-md-start align-items-md-start">
-                    <h5 className="text-muted fw-semibold text-start me-md-3 pt-md-1">
+                    <span className="text-muted fs-6 text fw-semibold text-start me-md-3 pt-md-1">
                       Your rating
-                    </h5>
+                    </span>
                     <fieldset
                       onChange={handleRatingChange}
                       className="starability-basic d-flex justify-content-start align-items-center"
@@ -429,7 +452,7 @@ const ShowProduct = (props) => {
             {recievedReviews.length !== 0 &&
               recievedReviews.map(function (review) {
                 return (
-                  <div key={review._id} className="border-bottom pt-3">
+                  <div key={review._id} className="border-bottom border-2 p-3">
                     <div className="d-flex flex-row justify-content-start align-items-start">
                       <FontAwesomeIcon
                         className="align-self-center"
@@ -438,16 +461,24 @@ const ShowProduct = (props) => {
                         size="2x"
                       />
                       <div className="ms-2">
-                        <h5 className="fw-bold">{review.author.username}</h5>
+                        <span className="fs-6 text fw-semibold">{review.author.username}</span>
                         <p
                           className="starability-result"
                           data-rating={review.rating}
                         ></p>
                       </div>
                     </div>
-                    <p className="text-justified fs-5 text fw-semibold">
+                    <p className="text-justified">
                       {review.body}
                     </p>
+                    {user.isLoggedIn && review.author._id === user.id && (
+                      <button
+                        className="btn btn-default text-danger fw-bold ps-0"
+                        onClick={() => handleDelete(review._id)}
+                      >
+                        Delete
+                      </button>
+                    )}
                   </div>
                 );
               })}

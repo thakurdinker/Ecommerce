@@ -89,7 +89,7 @@ const Cart = () => {
       }
       toast.success("Order(s) placed");
       localStorage.clear();
-      navigate("/");
+      document.location.reload();
     } catch (err) {
       console.log(err);
       toast.err(err.response);
@@ -154,9 +154,9 @@ const Cart = () => {
                 })}
               </tbody>
             </table>
-            <div className="d-grid gap-2 d-md-flex justify-content-md-end">
+            <div className="d-grid gap-2 d-flex justify-content-end d-md-flex justify-content-md-end">
               <button
-                className="btn btn-primary"
+                className="btn btn-success fw-bold rounded-pill"
                 onClick={() => {
                   localStorage.setItem("checkout", true);
                   setCheckout(true);
@@ -164,7 +164,10 @@ const Cart = () => {
               >
                 Checkout
               </button>
-              <button className="btn btn-warning" onClick={() => navigate(-1)}>
+              <button
+                className="btn btn-outline-danger rounded-pill fw-bold"
+                onClick={() => navigate(-1)}
+              >
                 Go Back
               </button>
             </div>

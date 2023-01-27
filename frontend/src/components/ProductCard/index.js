@@ -31,7 +31,7 @@ function ProductCard({ product }) {
       </div>
       <div id="category_btn_container">
         <p className="text-muted">{primary_category}</p>
-        <button className="btn btn-outline-success fw-bold">Add to Cart</button>
+        <button className="btn btn-outline-success fw-bold">View Product</button>
       </div>
     </div>
   );

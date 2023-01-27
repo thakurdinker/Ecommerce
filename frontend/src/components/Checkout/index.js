@@ -101,27 +101,29 @@ const CheckOut = ({ cart, handleDelete, handleBuyNow }) => {
               handleFormInput={handleFormInput}
             />
             <Payment setPaymentOption={setPaymentOption} />
-            <button
-              id="orderPlacebtn"
-              className="btn btn-warning w-100 mt-4"
-              onClick={() => {
-                if (shipping && paymentOption) {
-                  //  Place order
-                  handleBuyNow(shipping, paymentOption, addressIndex);
-                } else {
-                  toast.info(
-                    "Please check if address is selected or payemnt mode is selected"
-                  );
-                }
-              }}
-            >
-              Place Order
-            </button>
+            <div className="d-flex flex-row justify-content-end align-items-center pt-3 pe-md-3">
+              <button
+                id="orderPlacebtn"
+                className="btn btn-outline-success rounded-pill fw-bold"
+                onClick={() => {
+                  if (shipping && paymentOption) {
+                    //  Place order
+                    handleBuyNow(shipping, paymentOption, addressIndex);
+                  } else {
+                    toast.info(
+                      "Please check if address is selected or payemnt mode is selected"
+                    );
+                  }
+                }}
+              >
+                Place Order
+              </button>
+            </div>
           </div>
         </div>
 
         {/* Order Summary */}
-        <div className=" col-sm-6 col-md-4">
+        <div className=" col-sm-6 col-md-4 pe-md-1">
           <h5 className="text-muted">ORDER SUMMARY</h5>
           <div className="d-flex justify-content-between">
             <h6>Subtotal</h6>
@@ -150,12 +152,14 @@ const CheckOut = ({ cart, handleDelete, handleBuyNow }) => {
                   key={item.product._id}
                   className="d-flex justify-content-evenly mb-3"
                 >
-                  <img
-                    src={item.product.images[0]}
-                    className="img-thumbnail"
-                    alt=""
-                  />
-                  <div className="d-flex flex-column justify-content-between align-items-start">
+                  <div className="w-50">
+                    <img
+                      src={item.product.images[0]}
+                      className="img-thumbnail"
+                      alt=""
+                    />
+                  </div>
+                  <div className="d-flex flex-column justify-content-between align-items-start ms-2">
                     <h6>
                       {item.product.title} <br />{" "}
                       <span className="text-muted d-inline-block mt-2">
@@ -163,7 +167,7 @@ const CheckOut = ({ cart, handleDelete, handleBuyNow }) => {
                       </span>
                     </h6>
                     <button
-                      className="btn text-danger"
+                      className="btn btn-default fw-bold text-danger"
                       onClick={() => handleDelete(item.product._id)}
                     >
                       Remove

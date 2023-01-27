@@ -56,7 +56,6 @@ const AllProducts = () => {
   useEffect(() => {
     // Select first 55 products to show and load next batch when user reaches the end of the page
     if (batchSize <= data.length) {
-      console.log(batchSize);
       setAllProducts((prevProducts) => {
         return [...prevProducts, ...data.slice(batchSize, batchSize + 55)];
       });

@@ -83,7 +83,7 @@ const Shipping = ({
               {/* Submit selected Address */}
               <div className="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
                 <button
-                  className="btn btn-primary"
+                  className="btn btn-success fw-bold rounded-pill"
                   onClick={() => {
                     if (shipping) {
                       // Enable the PAYMENT ACOORDION
@@ -97,7 +97,7 @@ const Shipping = ({
                   Continue
                 </button>
                 <button
-                  className="btn btn-primary"
+                  className="btn btn-outline-success rounded-pill fw-bold"
                   onClick={() => setNewAddress(true)}
                 >
                   Add New
@@ -253,7 +253,7 @@ const Shipping = ({
               </div>
 
               <div className="d-grid gap-2 d-md-flex justify-content-md-end">
-                <button type="submit" className="btn btn-primary">
+                <button type="submit" className="btn btn-success fw-bold rounded-pill">
                   Continue
                 </button>
               </div>

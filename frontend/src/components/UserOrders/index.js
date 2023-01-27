@@ -17,6 +17,10 @@ const UserOrders = () => {
 
   const [data, setData] = useState(null);
 
+  const [searchData, setSearchData] = useState(null);
+
+  const [searchQuery, setSearchQuery] = useState("");
+
   //   {
   //     qty: "",
   //     shipping: undefined,
@@ -33,57 +37,91 @@ const UserOrders = () => {
 
   useDataFecth(`/user/${user.id}/orders`, setData);
 
-  const generateOrders = () => {
-    return data.orderDetails.map(function (order) {
+  const generateOrders = (data) => {
+    return data.orderDetails.map(function (order, index) {
       return (
-        <li
+        <div
+          id={order.product._id}
           key={order.product._id}
-          className="list-group-item list-group-item-action d-flex flex-md-column justify-content-md-evenly align-items-center gap-2"
+          className={`col-12 p-3 col-md-4 ps-md-0 pe-md-2 pt-md-2 border-bottom border-2`}
           onClick={() =>
             showOrderDetails((prevState) => {
               return Object.assign({}, { ...prevState }, { order, show: true });
             })
           }
         >
-          <img
-            className=""
-            src={order.product.images[0]}
-            alt=""
-            style={styles.image}
-          />
-          <h6 className="">{order.product.title}</h6>
-        </li>
+          <div className="d-flex flex-row justify-content-start align-items-start h-100">
+            <div className="d-flex flex-row justify-content-center align-items-start h-100">
+              <img className="img-fluid" src={order.product.images[0]} alt="" />
+            </div>
+            <h6 className="text-start ms-2">{order.product.title}</h6>
+            {index !== data.orderDetails.length - 1 && (
+              // Show borders on the right side when display is larger than medium
+              <div className="d-none d-md-inline-block border-1 border h-100 ms-2"></div>
+            )}
+          </div>
+        </div>
       );
     });
   };
 
+  const handleOrdersSearch = (e) => {
+    e.preventDefault();
+    if (searchQuery.trim() === "") {
+      return;
+    }
+
+    const foundOrders = data.orderDetails.filter((order) =>
+      order.product.title.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
+    setSearchData({ orderDetails: foundOrders });
+  };
+
   if (orderDetails.show) {
     return (
-      <>
-        <h6 className="text-muted text-center mt-3">
-          Order Id: {orderDetails.order.orderId}
-        </h6>
-        <div className="container mt-3 d-flex flex-column vh-100">
+      <div className="container">
+        <div className="d-flex flex-row justify-content-between align-items-center">
+          <h6 className="text-muted text-start mt-3">
+            Order Id: {orderDetails.order.orderId}
+          </h6>
+          {/* Button for large screens */}
+          <div className="d-none d-md-block">
+            <button
+              className="btn btn-success rounded-pill fw-bold"
+              onClick={() =>
+                showOrderDetails((prevState) => {
+                  return Object.assign({}, { ...prevState }, { show: false });
+                })
+              }
+            >
+              Go Back
+            </button>
+          </div>
+        </div>
+        <div className="container mt-3 d-flex flex-column flex-md-row justify-content-md-around align-items-md-start">
           <div
             id="orderDetails"
-            className="d-flex flex-md-column align-items-center gap-2"
+            className="d-flex align-items-center flex-md-column justify-content-md-start align-items-md-center "
           >
-            <img
-              src={orderDetails.order.product.images[0]}
-              alt=""
-              style={styles.image}
-            />
-            <div>
-              <h6>{orderDetails.order.product.title}</h6>
+            <div className="w-50">
+              <img
+                src={orderDetails.order.product.images[0]}
+                alt=""
+                className="img-thumbnail"
+              />
+            </div>
+            <div className="p-md-3">
+              <h6 className="fw-bold">{orderDetails.order.product.title}</h6>
               <h6 className="text-muted">Qty: {orderDetails.order.qty}</h6>
             </div>
           </div>
 
           <hr className="mt-4" />
 
-          <div id="shipping_details">
-            <h6 className="text-muted mb-3">Shipping Details</h6>
-            <h6>
+          <div id="shipping_details" className="pe-md-5">
+            <h3 className="mb-3 fw-bold">Shipping Details</h3>
+            <h6 className="lh-base">
               {orderDetails.order.shipping.firstName}{" "}
               {orderDetails.order.shipping.lastName} <br />
               {orderDetails.order.shipping.phoneNo}
@@ -102,12 +140,12 @@ const UserOrders = () => {
 
           <hr className="mt-4" />
 
-          <div id="payment_details">
-            <h6 className="text-muted">Payment Details</h6>
+          <div id="payment_details" className="">
+            <h3 className="fw-bold">Payment Details</h3>
             <div className="d-flex justify-content-between">
               <h6>Subtotal</h6>
               <h6>
-                {orderDetails.order.product.price * orderDetails.order.qty} USD
+                ${orderDetails.order.product.price * orderDetails.order.qty}
               </h6>
             </div>
             <div className="d-flex justify-content-between">
@@ -122,16 +160,16 @@ const UserOrders = () => {
             <div className="d-flex justify-content-between">
               <h6>Total</h6>
               <h6>
+                $
                 {orderDetails.order.product.price * orderDetails.order.qty +
                   0 +
                   0}{" "}
-                USD
               </h6>
             </div>
           </div>
 
           <button
-            className="btn btn-primary w-100 mt-auto d-md-none"
+            className="btn btn-success rounded-pill w-100 mt-5 d-md-none"
             onClick={() =>
               showOrderDetails((prevState) => {
                 return Object.assign({}, { ...prevState }, { show: false });
@@ -140,47 +178,47 @@ const UserOrders = () => {
           >
             Go Back
           </button>
-
-          {/* Medium and large devices */}
-          <div className="d-grid gap-2 d-none d-md-flex justify-content-md-center mt-3">
-            <button
-              className="btn btn-primary"
-              onClick={() =>
-                showOrderDetails((prevState) => {
-                  return Object.assign({}, { ...prevState }, { show: false });
-                })
-              }
-            >
-              Go Back
-            </button>
-          </div>
         </div>
-      </>
+      </div>
     );
   }
 
   return (
     <div className="container mt-3">
-      <form role="search" onSubmit={(e) => e.preventDefault()}>
-        <div className="d-flex justify-content-between gap-3">
+      <form
+        role="search"
+        onSubmit={handleOrdersSearch}
+        className="d-flex flex-row justify-content-center"
+      >
+        <div className="d-flex justify-content-between mb-4 w-100">
           <input
-            className="form-control"
+            className="form-control me-3"
             type="search"
             aria-label="Search"
-            placeholder="Search Your orders"
+            value={searchQuery}
+            onChange={(e) => {
+              if (e.target.value.trim() === "") {
+                setSearchData(null);
+              }
+              setSearchQuery(e.target.value);
+            }}
           />
-          <button className="btn btn-warning" type="submit">
+          <button
+            className="btn btn-success rounded-pill fw-bold"
+            type="submit"
+          >
             Search
           </button>
         </div>
-        <hr className="mt-3" />
       </form>
 
-      {/* Orders List  */}
-      {data !== null && (
-        <ul className="mt-4 list-group list-group-horizontal-md">
-          {generateOrders()}
-        </ul>
+      {searchData === null ? (
+        <div className="row">
+          {/* Orders List  */}
+          {data !== null && generateOrders(data)}
+        </div>
+      ) : (
+        <div className="row">{generateOrders(searchData)}</div>
       )}
     </div>
   );
