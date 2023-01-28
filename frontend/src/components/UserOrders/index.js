@@ -40,10 +40,11 @@ const UserOrders = () => {
   const generateOrders = (data) => {
     return data.orderDetails.map(function (order, index) {
       return (
+        // border-bottom border-2 border-danger
         <div
           id={order.product._id}
           key={order.product._id}
-          className={`col-12 p-3 col-md-4 ps-md-0 pe-md-2 pt-md-2 border-bottom border-2`}
+          className={`col-12 p-3 col-md-4 ps-md-0 pe-md-2 pt-md-2`}
           onClick={() =>
             showOrderDetails((prevState) => {
               return Object.assign({}, { ...prevState }, { order, show: true });
@@ -56,8 +57,8 @@ const UserOrders = () => {
             </div>
             <h6 className="text-start ms-2">{order.product.title}</h6>
             {index !== data.orderDetails.length - 1 && (
-              // Show borders on the right side when display is larger than medium
-              <div className="d-none d-md-inline-block border-1 border h-100 ms-2"></div>
+              // Show borders on the right side when display is larger than medium border-1 border
+              <div className="d-none d-md-inline-block   h-100 ms-2"></div>
             )}
           </div>
         </div>
@@ -80,8 +81,8 @@ const UserOrders = () => {
 
   if (orderDetails.show) {
     return (
-      <div className="container">
-        <div className="d-flex flex-row justify-content-between align-items-center">
+      <div className="container-fluid pe-md-5 ps-md-5  vh-100 d-md-flex flex-md-column justify-content-md-center align-items-evenly">
+        <div className=" d-flex flex-row justify-content-between align-items-center">
           <h6 className="text-muted text-start mt-3">
             Order Id: {orderDetails.order.orderId}
           </h6>
@@ -99,19 +100,19 @@ const UserOrders = () => {
             </button>
           </div>
         </div>
-        <div className="container mt-3 d-flex flex-column flex-md-row justify-content-md-around align-items-md-start">
+        <div className=" mt-3 d-flex flex-column flex-md-row justify-content-md-between align-items-md-start">
           <div
             id="orderDetails"
-            className="d-flex align-items-center flex-md-column justify-content-md-start align-items-md-center "
+            className="d-flex align-items-center flex-md-column justify-content-md-start align-items-md-start"
           >
-            <div className="w-50">
+            <div className="">
               <img
                 src={orderDetails.order.product.images[0]}
                 alt=""
                 className="img-thumbnail"
               />
             </div>
-            <div className="p-md-3">
+            <div className="p-md-3 ms-2 ms-md-0">
               <h6 className="fw-bold">{orderDetails.order.product.title}</h6>
               <h6 className="text-muted">Qty: {orderDetails.order.qty}</h6>
             </div>
@@ -169,7 +170,7 @@ const UserOrders = () => {
           </div>
 
           <button
-            className="btn btn-success rounded-pill w-100 mt-5 d-md-none"
+            className="btn btn-success rounded-pill w-100 mt-5 mb-5 d-md-none"
             onClick={() =>
               showOrderDetails((prevState) => {
                 return Object.assign({}, { ...prevState }, { show: false });
