@@ -7,6 +7,7 @@ module.exports.register = catchAsync(async (req, res) => {
     return res.status(400).json({ error: "Bad Request" });
   }
   const { username, email, password } = req.body.formData;
+
   const user = new User({ username, email, role: 0 });
   const registeredUser = await User.register(user, password);
   // console.log(registeredUser);

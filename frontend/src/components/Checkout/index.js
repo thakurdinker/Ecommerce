@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import Payment from "../Payment";
 import Shipping from "../Shipping";
 
-const CheckOut = ({ cart, handleDelete, handleBuyNow }) => {
+const CheckOut = ({ cart, handleDelete, handleBuyNow, setSingleItem }) => {
   const [orderSummary, setSummary] = useState({
     subtotal: 0,
     taxes: 0,
@@ -17,8 +17,6 @@ const CheckOut = ({ cart, handleDelete, handleBuyNow }) => {
   const [shipping, setShipping] = useState(null);
 
   const [paymentOption, setPaymentOption] = useState(null);
-
-  const [addressIndex, setAddressIndex] = useState(null);
 
   const [formInput, setFormInput] = useState({
     firstName: "",
@@ -59,6 +57,7 @@ const CheckOut = ({ cart, handleDelete, handleBuyNow }) => {
     });
   };
 
+  // Store address, if user enters new address
   const handleAddressSubmit = async (e) => {
     e.preventDefault();
     console.log(formInput);
@@ -95,7 +94,6 @@ const CheckOut = ({ cart, handleDelete, handleBuyNow }) => {
               shipping={shipping}
               setShipping={setShipping}
               setNewAddress={setNewAddress}
-              setAddressIndex={setAddressIndex}
               handleAddressSubmit={handleAddressSubmit}
               formInput={formInput}
               handleFormInput={handleFormInput}
@@ -108,7 +106,8 @@ const CheckOut = ({ cart, handleDelete, handleBuyNow }) => {
                 onClick={() => {
                   if (shipping && paymentOption) {
                     //  Place order
-                    handleBuyNow(shipping, paymentOption, addressIndex);
+                    handleBuyNow(shipping, paymentOption, cart);
+                    setSingleItem(null);
                   } else {
                     toast.info(
                       "Please check if address is selected or payemnt mode is selected"
@@ -168,7 +167,10 @@ const CheckOut = ({ cart, handleDelete, handleBuyNow }) => {
                     </h6>
                     <button
                       className="btn btn-default fw-bold text-danger"
-                      onClick={() => handleDelete(item.product._id)}
+                      onClick={() => {
+                        setSingleItem(null);
+                        handleDelete(item.product._id);
+                      }}
                     >
                       Remove
                     </button>

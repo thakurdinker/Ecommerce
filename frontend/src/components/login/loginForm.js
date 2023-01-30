@@ -1,6 +1,6 @@
 import loginImage from "../../assets/images/login.jpg";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSignIn, faSignInAlt } from "@fortawesome/free-solid-svg-icons";
+import { faSignInAlt } from "@fortawesome/free-solid-svg-icons";
 
 const LoginForm = ({ handleFormSubmit }) => {
   return (
@@ -23,8 +23,7 @@ const LoginForm = ({ handleFormSubmit }) => {
             </div>
 
             <form
-              className="validate-form w-100 d-flex flex-column"
-              noValidate
+              className="w-100 d-flex flex-column"
               onSubmit={handleFormSubmit}
             >
               <div className="mb-3 align-self-start w-100">

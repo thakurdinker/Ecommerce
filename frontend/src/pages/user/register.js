@@ -20,6 +20,14 @@ const RegisterUser = () => {
 
   const handleFormSubmit = async (event) => {
     event.preventDefault();
+    if (
+      formData.username.trim() === "" ||
+      formData.email.trim() === "" ||
+      formData.password.trim() === ""
+    ) {
+      toast.info("Please provide valid information");
+      return;
+    }
     try {
       const { data } = await axios.post(`/register`, {
         formData,

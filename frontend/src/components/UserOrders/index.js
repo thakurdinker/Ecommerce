@@ -72,6 +72,10 @@ const UserOrders = () => {
       return;
     }
 
+    if (data === null) {
+      return;
+    }
+
     const foundOrders = data.orderDetails.filter((order) =>
       order.product.title.toLowerCase().includes(searchQuery.toLowerCase())
     );
@@ -223,12 +227,6 @@ const UserOrders = () => {
       )}
     </div>
   );
-};
-
-const styles = {
-  image: {
-    width: "40%",
-  },
 };
 
 export default UserOrders;

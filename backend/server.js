@@ -10,6 +10,7 @@ const LocalStrategy = require("passport-local");
 const MongoDBStore = require("connect-mongo");
 
 const productRouter = require("./routes/products");
+const categoryRouter = require("./routes/category");
 const reviewRouter = require("./routes/review");
 const userRouter = require("./routes/user");
 const cartRouter = require("./routes/cart");
@@ -86,6 +87,7 @@ passport.deserializeUser(User.deserializeUser());
 
 app.use("/admin/products", adminProductRouter);
 app.use("/products", productRouter);
+app.use("/categories", categoryRouter);
 app.use("/products/:id/review", reviewRouter);
 app.use("/products/:id/buy", buyRouter);
 app.use("/user/:userID/cart", cartRouter);
@@ -97,13 +99,14 @@ app.use("/currentUser", async (req, res) => {
   if (req.user === undefined) {
     return res.status(404).json({ message: "User not Logged In" });
   }
-  const { username, email, _id, role } = req.user;
+  const { username, email, _id, role, addresses } = req.user;
   // Get no. of items in the cart
   const cart = await Cart.findOne({ user: req.user });
   res.status(200).json({
     username: username,
     email: email,
     id: _id,
+    addresses: addresses,
     itemsInCart: cart ? cart.items.length : 0,
     role: role === undefined ? 0 : role,
   });

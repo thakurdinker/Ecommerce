@@ -4,7 +4,6 @@ const Shipping = ({
   shipping,
   setShipping,
   setNewAddress,
-  setAddressIndex,
   handleAddressSubmit,
   formInput,
   handleFormInput,
@@ -52,8 +51,6 @@ const Shipping = ({
                                   { ...address }
                                 );
                               });
-
-                              setAddressIndex(index);
                             }
                           }}
                         />
@@ -253,7 +250,10 @@ const Shipping = ({
               </div>
 
               <div className="d-grid gap-2 d-md-flex justify-content-md-end">
-                <button type="submit" className="btn btn-success fw-bold rounded-pill">
+                <button
+                  type="submit"
+                  className="btn btn-success fw-bold rounded-pill"
+                >
                   Continue
                 </button>
               </div>

@@ -1,74 +1,28 @@
 import axios from "axios";
-import { useContext, useEffect, useState } from "react";
+import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { DECREMENT_CART, User } from "../../contexts/UserContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import CheckOut from "../../components/Checkout";
-import {
-  HIDE_SEARCH_FILED,
-  NavBarSearchContext,
-} from "../../contexts/NavSearchContext";
+import { CartContext } from "../../contexts/cartContext";
+import { User } from "../../contexts/UserContext";
 
 const Cart = () => {
-  const [cart, setCart] = useState({});
-  const [checkout, setCheckout] = useState(false);
-
   const navigate = useNavigate();
 
-  const { user, dispatchUser } = useContext(User);
-  const { dispatch } = useContext(NavBarSearchContext);
+  const { user } = useContext(User);
+  const {
+    cart,
+    handleDeletebtnClick,
+    checkout,
+    setCheckout,
+    singleItem,
+    setSingleItem,
+  } = useContext(CartContext);
 
-  useEffect(() => {
-    async function fetchCart() {
-      try {
-        const res = await axios.get(`/user/${user.id}/cart`);
-        if (res.status === 200) {
-          setCart(res.data.cart);
-          setCheckout(localStorage.getItem("checkout"));
-        }
-      } catch (err) {
-        console.log(err);
-        console.log("Cart error");
-        // toast.info("Cannot Access Cart. Please Login");
-        // navigate("/login");
-      }
-    }
-    fetchCart();
-    // Hide search field
-    dispatch({ type: HIDE_SEARCH_FILED });
-  }, [user.id, user.isLoggedIn, navigate, dispatch]);
-
-  const handleDeletebtnClick = async (itemId) => {
-    console.log(itemId);
-    try {
-      const res = await axios.delete(`/user/${user.id}/cart`, {
-        data: { itemId },
-      });
-      if (res.status === 200) {
-        // Update Context
-        dispatchUser({ type: DECREMENT_CART });
-        // Update State
-        setCart((prevCart) => {
-          const updatedItems = prevCart.items.filter(
-            (item) => item.product._id !== itemId
-          );
-          prevCart.items = updatedItems;
-          return prevCart;
-        });
-
-        if (cart.items.length === 0) {
-          localStorage.removeItem("checkout");
-          document.location.reload();
-        }
-      }
-    } catch (err) {
-      toast.error(err.response.data);
-    }
-  };
-
-  const handleBuyNow = async (shipping, paymentOption, addressIndex) => {
+  // Handles buy now from checkout page
+  const handleBuyNow = async (shipping, paymentOption, cart) => {
     if (!user.isLoggedIn) {
       toast.info("Please, Login first");
       navigate("/login");
@@ -99,9 +53,10 @@ const Cart = () => {
   if (checkout) {
     return (
       <CheckOut
-        cart={cart}
+        cart={singleItem !== null ? singleItem : cart}
         handleDelete={handleDeletebtnClick}
         handleBuyNow={handleBuyNow}
+        setSingleItem={setSingleItem}
       />
     );
   }
@@ -137,7 +92,10 @@ const Cart = () => {
                         {item.product.title} <br />{" "}
                         <button
                           className="btn"
-                          onClick={() => handleDeletebtnClick(item.product._id)}
+                          onClick={async (e) => {
+                            e.stopPropagation();
+                            await handleDeletebtnClick(item.product._id);
+                          }}
                         >
                           <FontAwesomeIcon icon={faTrash} />
                         </button>

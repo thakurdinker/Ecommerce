@@ -45,7 +45,10 @@ module.exports.addToCart = async (req, res) => {
     const items = { qty: qty, product: product };
     cart.items.push(items);
     await cart.save();
-    return res.status(200).json({ message: "Saved Product to cart" });
+
+    return res.status(200).json({
+      message: "Saved Product to cart",
+    });
   }
 
   // Otherwise create a new cart
@@ -53,9 +56,9 @@ module.exports.addToCart = async (req, res) => {
   const items = { qty: qty, product: product };
   cart.items.push(items);
   await cart.save();
-  res
-    .status(200)
-    .json({ message: "Created cart and product saved successfully" });
+  res.status(200).json({
+    message: "Created cart and product saved successfully",
+  });
 };
 
 module.exports.deleteItem = async (req, res) => {

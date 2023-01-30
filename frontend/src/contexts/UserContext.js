@@ -15,6 +15,7 @@ const initialState = {
   email: "",
   isLoggedIn: false,
   itemsInCart: 0,
+  addresses: [],
   role: "0",
 };
 
@@ -63,6 +64,7 @@ export const UserProvider = ({ children }) => {
               email: res.data.email,
               isLoggedIn: true,
               id: res.data.id,
+              addresses: res.data.addresses,
               itemsInCart: res.data.itemsInCart,
               role: res.data.role,
             },

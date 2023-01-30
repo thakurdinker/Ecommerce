@@ -23,6 +23,7 @@ import UserProtectedPages from "./components/UserProtectedPages";
 import AddProduct from "./pages/admin/addProduct";
 import Orders from "./pages/admin/orders";
 import UserOrders from "./components/UserOrders";
+import { CartProvider } from "./contexts/cartContext";
 
 function NoMatch() {
   const location = useLocation();
@@ -42,7 +43,9 @@ function WithUserNav() {
       <UserProvider>
         <NavBar />
         <UserProtectedPages>
-          <Outlet />
+          <CartProvider>
+            <Outlet />
+          </CartProvider>
         </UserProtectedPages>
       </UserProvider>
     </>

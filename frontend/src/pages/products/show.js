@@ -5,23 +5,23 @@ import {
   NavBarSearchContext,
   HIDE_SEARCH_FILED,
 } from "../../contexts/NavSearchContext";
-import { User, INCREMENT_CART } from "../../contexts/UserContext";
+import { User } from "../../contexts/UserContext";
 import "./showPage.css";
 import "../../stylesheets/star.css";
-import Review from "../../components/Review/review";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import Carousel from "../../components/Carousel";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faTruck,
   faBookBookmark,
   faUserCircle,
 } from "@fortawesome/free-solid-svg-icons";
+import { CartContext } from "../../contexts/cartContext";
 
-const ShowProduct = (props) => {
+const ShowProduct = () => {
   const { id } = useParams();
   const [product, setProduct] = useState({
+    _id: "",
     title: "",
     brand: "",
     images: [],
@@ -38,10 +38,9 @@ const ShowProduct = (props) => {
   const [reviewBody, setReviewBody] = useState("");
   const [recievedReviews, setRecievedReviews] = useState([]);
   const [qty, setQty] = useState(1);
-  const [cart, addToCart] = useState([]);
-
   const { dispatch } = useContext(NavBarSearchContext);
-  const { user, dispatchUser } = useContext(User);
+  const { user } = useContext(User);
+  const { handleCart, handleSingleBuyNow } = useContext(CartContext);
 
   const navigate = useNavigate();
 
@@ -53,64 +52,6 @@ const ShowProduct = (props) => {
   const handleRatingChange = (event) => {
     // console.log(event.target.value);
     setRating(event.target.value);
-  };
-
-  const handleCart = async () => {
-    if (!user.isLoggedIn) {
-      toast.info("Please, Login first");
-      navigate("/login");
-      return;
-    }
-
-    if (product.stock === 0) {
-      toast.error("Out of Stock");
-      return;
-    }
-    // Add item to cart
-
-    // Check if the item is already in the cart
-    if (cart.includes(product._id)) {
-      toast.info("Item already in cart");
-      return;
-    }
-
-    try {
-      const res = await axios.post(`/user/${user.id}/cart`, {
-        productId: product._id,
-        qty: qty,
-      });
-      if (res.status === 200) {
-        toast.success("Added to Cart");
-        dispatchUser({ type: INCREMENT_CART });
-        addToCart(product._id);
-      }
-
-      // console.log(res);
-      // console.log(user.id);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  const handleBuyNow = async () => {
-    // if (!user.isLoggedIn) {
-    //   toast.info("Please, Login first");
-    //   navigate("/login");
-    //   return;
-    // }
-    // if (product.stock === 0) {
-    //   toast.error("Out of Stock");
-    //   return;
-    // }
-    // try {
-    //   const res = await axios.post(`/products/${product._id}/buy`, {
-    //     qty: qty,
-    //   });
-    //   toast.info(res.data.message);
-    //   document.location.reload();
-    // } catch (err) {
-    //   console.log(err);
-    // }
   };
 
   const handleSubmit = async (event) => {
@@ -143,6 +84,7 @@ const ShowProduct = (props) => {
     setReviewBody("");
   };
 
+  // Handles Review delete
   const handleDelete = async (reviewID) => {
     const res = await axios.delete(`/products/${id}/review/${reviewID}`);
     if (res.status === 200) {
@@ -297,6 +239,10 @@ const ShowProduct = (props) => {
                 <button
                   id="buynowbtn"
                   className="btn btn-success fw-bold rounded-pill me-3 pe-md-3 ps-md-3 pt-md-2 pb-md-2 pe-xl-4 ps-xl-4 pt-xl-2 pb-xl-2"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleSingleBuyNow(product, qty);
+                  }}
                 >
                   Buy Now
                 </button>
@@ -305,7 +251,7 @@ const ShowProduct = (props) => {
                   className="btn btn-outline-success fw-bold rounded-pill p-1 pe-md-3 ps-md-3 pt-md-2 pb-md-2 pe-xl-5 ps-xl-5 pt-xl-2 pb-xl-2"
                   onClick={(e) => {
                     e.stopPropagation();
-                    handleCart();
+                    handleCart(product, qty);
                   }}
                 >
                   Add To Cart
@@ -461,16 +407,16 @@ const ShowProduct = (props) => {
                         size="2x"
                       />
                       <div className="ms-2">
-                        <span className="fs-6 text fw-semibold">{review.author.username}</span>
+                        <span className="fs-6 text fw-semibold">
+                          {review.author.username}
+                        </span>
                         <p
                           className="starability-result"
                           data-rating={review.rating}
                         ></p>
                       </div>
                     </div>
-                    <p className="text-justified">
-                      {review.body}
-                    </p>
+                    <p className="text-justified">{review.body}</p>
                     {user.isLoggedIn && review.author._id === user.id && (
                       <button
                         className="btn btn-default text-danger fw-bold ps-0"
