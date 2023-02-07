@@ -53,6 +53,7 @@ module.exports.getOrders = catchAsync(async (req, res) => {
       const items = order.items.filter((item) =>
         item.product.seller.equals(mongoose.Types.ObjectId(req.user._id))
       );
+
       orderData.push({
         customerName: order.user.username,
         products: items,
@@ -64,4 +65,38 @@ module.exports.getOrders = catchAsync(async (req, res) => {
   }
 
   res.status(400).json({ message: "BAD REQUEST" });
+});
+
+module.exports.getOrderActivity = catchAsync(async (req, res) => {
+  const { userID } = req.params;
+
+  const orders = await Order.find({
+    sellers: mongoose.Types.ObjectId(userID),
+  }).populate({
+    path: "items",
+    populate: {
+      path: "product",
+    },
+  });
+
+  let newOrder = 0,
+    orderProcessed = 0,
+    readyToShip = 0,
+    orderShipped = 0;
+
+  for (let order of orders) {
+    for (let item of order.items) {
+      if (item.status === "Order Placed") newOrder++;
+      if (item.status === "Order Processed") orderProcessed++;
+      if (item.status === "Ready To Ship") readyToShip++;
+      if (item.status === "Shipped") orderShipped++;
+    }
+  }
+
+  res.json({
+    newOrder,
+    orderProcessed,
+    readyToShip,
+    orderShipped,
+  });
 });

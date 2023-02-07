@@ -39,7 +39,18 @@ const LoginAdmin = () => {
     }
   };
 
-  return <LoginForm handleFormSubmit={handleFormSubmit} />;
+  const handleSignUp = (e) => {
+    e.preventDefault();
+
+    navigate("/admin/register");
+  };
+
+  return (
+    <LoginForm
+      handleFormSubmit={handleFormSubmit}
+      handleSignUp={handleSignUp}
+    />
+  );
 };
 
 export default LoginAdmin;

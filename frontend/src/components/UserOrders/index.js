@@ -5,6 +5,7 @@ import {
   HIDE_SEARCH_FILED,
 } from "../../contexts/NavSearchContext";
 import { useDataFecth } from "../../utils/useDataFetch";
+import "./user_orders.css";
 
 const UserOrders = () => {
   const { user } = useContext(User);
@@ -42,18 +43,18 @@ const UserOrders = () => {
       return (
         // border-bottom border-2 border-danger
         <div
-          id={order.product._id}
-          key={order.product._id}
-          className={`col-12 p-3 col-md-4 ps-md-0 pe-md-2 pt-md-2`}
+          id={order.orderId}
+          key={order.orderId}
+          className={`col-12 p-3 col-md-4 ps-md-0 pe-md-2 pt-md-2 orders_container`}
           onClick={() =>
             showOrderDetails((prevState) => {
               return Object.assign({}, { ...prevState }, { order, show: true });
             })
           }
         >
-          <div className="d-flex flex-row justify-content-start align-items-start h-100">
-            <div className="d-flex flex-row justify-content-center align-items-start h-100">
-              <img className="img-fluid" src={order.product.images[0]} alt="" />
+          <div className="d-flex flex-row justify-content-start align-items-start">
+            <div className="d-flex flex-row justify-content-center align-items-start">
+              <img className="order_img_container" src={order.product.images[0]} alt="" />
             </div>
             <h6 className="text-start ms-2">{order.product.title}</h6>
             {index !== data.orderDetails.length - 1 && (

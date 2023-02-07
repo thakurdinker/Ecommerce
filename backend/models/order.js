@@ -23,10 +23,21 @@ const orderSchema = new Schema({
         type: Object,
       },
       paymentMode: {
-        type: "String",
+        type: String,
       },
       status: {
-        type: "String",
+        type: String,
+        enum: [
+          "Order Placed",
+          "Order Processed",
+          "Ready To Ship",
+          "Shipped",
+          "Delivered",
+          "Cancelled",
+        ],
+      },
+      date: {
+        type: Number,
       },
       product: { type: Schema.Types.ObjectId, ref: "Products" },
     },

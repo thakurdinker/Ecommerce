@@ -1,80 +1,134 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AdminContext } from "../../admin/context/AdminContext";
 import { useDataFecth } from "../../utils/useDataFetch";
 
-import { Link } from "react-router-dom";
+const AllOrders = ({
+  orderData,
+  searchQuery,
+  setSearchQuery,
+  handleSearch,
+  setSearchedItems,
+}) => {
+  return (
+    <div>
+      <div className="">
+        <h3>Order Details</h3>
+      </div>
+      <div className="mt-5 d-flex flex-row">
+        <div className="input-group">
+          <input
+            type="text"
+            className="form-control"
+            id="searchOrders"
+            value={searchQuery}
+            onChange={(e) => {
+              if (e.target.value.trim() === "") {
+                setSearchedItems(null);
+              }
+              setSearchQuery(() => e.target.value);
+            }}
+          />
+        </div>
+
+        <button
+          className="btn btn-success rounded-pill fw-bold ms-3"
+          onClick={handleSearch}
+        >
+          Search
+        </button>
+      </div>
+
+      <div className="form-text">
+        Search for order ID, Customer, Order Status
+      </div>
+      {/* Latest Order table */}
+      <div className="table-responsive mt-3">
+        <table className="table table-hover">
+          <thead>
+            <tr>
+              <th scope="col">OrderId</th>
+              <th scope="col">Order</th>
+              <th scope="col">Customer Name</th>
+              <th scope="col">Amount</th>
+              <th scope="col">Status</th>
+              <th scope="col">Payment</th>
+            </tr>
+          </thead>
+          <tbody>
+            {orderData !== null &&
+              orderData.map(function (item) {
+                return (
+                  <tr key={item._id}>
+                    <td className="w-25">{item._id}</td>
+                    <td className="fw-semibold w-25">{item.product.title}</td>
+                    <td>
+                      {item.shipping.firstName} {item.shipping.lastName}
+                    </td>
+                    <td>${item.product.price * parseInt(item.qty)}</td>
+                    <td>{item.status}</td>
+                    <td>{item.paymentMode}</td>
+                  </tr>
+                );
+              })}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+};
 
 const Orders = () => {
   const [data, setData] = useState({ orderData: [] });
+
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const [searchedItems, setSearchedItems] = useState(null);
+
+  const [orderData, setOrderData] = useState(null);
 
   const { admin } = useContext(AdminContext);
 
   useDataFecth(`/user/${admin.id}/orders`, setData);
 
+  useEffect(() => {
+    // This function converts order data into array of objects where each object is a product with shipping info
+    const orderData = [];
+    data.orderData.map(function (item) {
+      const products = item.products.filter((product) => true);
+      orderData.push(...products);
+      return null;
+    });
+    setOrderData(orderData);
+  }, [data.orderData]);
+
+  const handleSearch = () => {
+    if (searchQuery.trim() === "") return;
+    const searchedItems = [];
+    data.orderData.map(function (item) {
+      const products = item.products.filter(
+        (product) =>
+          product._id === searchQuery ||
+          product.shipping.firstName.toLowerCase() +
+            " " +
+            product.shipping.lastName.toLowerCase() ===
+            searchQuery.toLowerCase() ||
+          product.status.toLowerCase() === searchQuery.toLowerCase()
+      );
+      searchedItems.push(...products);
+      return null;
+    });
+    setSearchedItems(() => searchedItems);
+  };
+
   return (
-    <div className="mt-3 container  table-responsive">
-      <table className="table table-primary table-bordered align-middle">
-        <thead className="table-dark text-center">
-          <tr>
-            <th scope="col">S.No</th>
-            <th scope="col">Products</th>
-            <th scope="col">Customer Name</th>
-            <th scope="col">Overall Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          {data.orderData.map(function (orderInfo, index) {
-            return (
-              <tr key={orderInfo.orderId}>
-                <th scope="row">{index + 1}</th>
-                <td>
-                  <table className="table table-sm table-danger align-middle">
-                    <thead className="thead-dark ">
-                      <tr>
-                        <th scope="col">Product Name</th>
-                        <th scope="col">Qty ordered</th>
-                        <th scope="col">Shipping Address</th>
-                        <th scope="col">Status</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {orderInfo.products.map(function (item) {
-                        return (
-                          <tr key={item.product._id}>
-                            <td>
-                              <Link to={`/admin/product/${item.product._id}`}>
-                                {item.product.title}
-                              </Link>
-                            </td>
-                            <td>{item.qty}</td>
-                            <td>
-                              {item.shipping.firstName} {item.shipping.lastName}{" "}
-                              <br />
-                              {item.shipping.phoneNo}
-                              <br />
-                              {item.shipping.email}
-                              <br />
-                              {item.shipping.streetAddress}
-                              <br />
-                              {item.shipping.landmark}
-                              <br />
-                              {item.shipping.city} - {item.shipping.postalCode}
-                              <br />
-                            </td>
-                            <td>{item.status}</td>
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table>
-                </td>
-                <td>{orderInfo.customerName}</td>
-                <td>Nil</td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
+    <div className="container mt-3">
+      <AllOrders
+        orderData={searchedItems === null ? orderData : searchedItems}
+        searchQuery={searchQuery}
+        handleSearch={handleSearch}
+        setSearchQuery={setSearchQuery}
+        setSearchedItems={setSearchedItems}
+      />
     </div>
   );
 };

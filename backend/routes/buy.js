@@ -33,6 +33,7 @@ router.route("/").post(isLoggedIn, isUser, async (req, res) => {
       shipping: shipping,
       paymentMode: paymentOption,
       status: "Order Placed",
+      date: Date.now(), // Time in milliseconds
     };
     order.items.push(item);
     await order.save();
@@ -48,6 +49,7 @@ router.route("/").post(isLoggedIn, isUser, async (req, res) => {
       shipping: shipping,
       paymentMode: paymentOption,
       status: "Order Placed",
+      date: Date.now(), // Time in milliseconds
     };
     newOrder.items.push(item);
     await newOrder.save();

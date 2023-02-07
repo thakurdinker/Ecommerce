@@ -42,11 +42,19 @@ const RegisterUser = () => {
       // console.log(err.response.status);
     }
   };
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+
+    navigate("/login");
+  };
+
   return (
     <RegisterForm
       formData={formData}
       handleFormSubmit={handleFormSubmit}
       handleInputChange={handleInputChange}
+      handleLogin={handleLogin}
     />
   );
 };

@@ -1,0 +1,16 @@
+.orders_container {
+  cursor: pointer;
+}
+
+.order_img_container {
+  width: 100px;
+  height: 100px;
+}
+
+/* @media (min-width: 768px) {
+  .order_img_container {
+    border: 2px solid green;
+    width: 100px;
+    height: 100px;
+  }
+} */

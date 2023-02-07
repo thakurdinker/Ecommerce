@@ -42,7 +42,7 @@ db.once("open", () => {
         image.trim();
       });
       data.images = images;
-      data.seller = mongoose.Types.ObjectId("63b3ee43cfe4b16802ac9dbf"); // admin id
+      data.seller = mongoose.Types.ObjectId("63dd382714848775fe9ab998"); // admin id
       data.stock = 10;
       primary_category.push(
         data.primary_category.trim() !== "" && data.primary_category

@@ -47,7 +47,13 @@ const LoginUser = () => {
     }
   };
 
-  return <LoginForm handleFormSubmit={handleFormSubmit} />;
+  const handleSignUp = (e) => {
+    e.preventDefault();
+
+    navigate("/register");
+  };
+
+  return <LoginForm handleFormSubmit={handleFormSubmit} handleSignUp={handleSignUp} />;
 };
 
 export default LoginUser;

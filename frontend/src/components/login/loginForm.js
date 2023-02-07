@@ -2,7 +2,7 @@ import loginImage from "../../assets/images/login.jpg";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSignInAlt } from "@fortawesome/free-solid-svg-icons";
 
-const LoginForm = ({ handleFormSubmit }) => {
+const LoginForm = ({ handleFormSubmit, handleSignUp }) => {
   return (
     <div className="container pe-3 ps-3 pt-4">
       <div className="row">
@@ -77,7 +77,11 @@ const LoginForm = ({ handleFormSubmit }) => {
 
             <p className="text fs-6 fw-semibold text-success mt-4">
               Don't have an account?{" "}
-              <a className="text-success text-decoration-none" href="/register">
+              <a
+                className="text-success text-decoration-none"
+                href=""
+                onClick={handleSignUp}
+              >
                 Sign up
               </a>
             </p>

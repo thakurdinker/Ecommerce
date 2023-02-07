@@ -2,7 +2,12 @@ import registerImage from "../../assets/images/register.jpg";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUserCircle } from "@fortawesome/free-solid-svg-icons";
 
-const RegisterForm = ({ handleFormSubmit, formData, handleInputChange }) => {
+const RegisterForm = ({
+  handleFormSubmit,
+  formData,
+  handleInputChange,
+  handleLogin,
+}) => {
   return (
     <div className="container pe-3 ps-3 pt-4">
       <div className="row">
@@ -91,7 +96,11 @@ const RegisterForm = ({ handleFormSubmit, formData, handleInputChange }) => {
 
             <p className="text fs-6 fw-semibold text-success mt-4">
               Already have an account?{" "}
-              <a className="text-success text-decoration-none" href="/login">
+              <a
+                className="text-success text-decoration-none"
+                href=""
+                onClick={handleLogin}
+              >
                 Login
               </a>
             </p>
