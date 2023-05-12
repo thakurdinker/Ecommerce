@@ -30,6 +30,7 @@ const Cart = () => {
     }
     try {
       for (let item of cart.items) {
+
         const res = await axios.post(`/products/${item.product._id}/buy`, {
           qty: item.qty,
           shipping: shipping,

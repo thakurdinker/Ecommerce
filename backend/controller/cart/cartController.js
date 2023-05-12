@@ -69,13 +69,20 @@ module.exports.deleteItem = async (req, res) => {
   }
   const user = await User.findById(userID);
   const cart = await Cart.findOne({ user: user });
+
   if (!user && !cart) {
     return res.status(404).json({ error: "No cart Found" });
   }
 
-  await cart.updateOne({
-    $pull: { items: { product: mongoose.Types.ObjectId(itemId) } },
-  });
-  await cart.save();
+  try {
+    await cart.updateOne({
+      $pull: { items: { product: mongoose.Types.ObjectId(itemId) } },
+    });
+    await cart.save();
+  } catch (err) {
+    // This means that there is no cart, which is possible if user pressed buy now directly instead of adding item in the cart first
+    console.log("No Cart");
+    return res.status(404).json({ error: "No cart Found" });
+  }
   res.status(200).json({ message: "Item deleted" });
 };

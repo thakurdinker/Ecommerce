@@ -88,6 +88,8 @@ export const CartProvider = ({ children }) => {
       const res = await axios.delete(`/user/${user.id}/cart`, {
         data: { itemId },
       });
+
+      console.log(res.status);
       if (res.status === 200) {
         // Update Context
         dispatchUser({ type: DECREMENT_CART });
@@ -110,7 +112,7 @@ export const CartProvider = ({ children }) => {
         }
       }
     } catch (err) {
-      toast.error(err.response.data);
+      toast.error(err.response);
     }
   };
 
@@ -125,6 +127,8 @@ export const CartProvider = ({ children }) => {
       toast.error("Out of Stock");
       return;
     }
+
+    await handleCart(product, qty);
 
     setCheckout(() => true);
     // create a temp cart, containing only single item,
